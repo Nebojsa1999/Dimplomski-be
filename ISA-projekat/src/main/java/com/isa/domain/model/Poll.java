@@ -9,7 +9,7 @@ public class Poll extends AbstractEntity {
 
     @OneToOne
     @JoinColumn(name = "blood_id")
-    private Blood blood;
+    private BloodSample bloodSample;
 
     private boolean weight;
 
@@ -27,12 +27,12 @@ public class Poll extends AbstractEntity {
 
     private boolean piercing;
 
-    public Blood getBlood() {
-        return blood;
+    public BloodSample getBlood() {
+        return bloodSample;
     }
 
-    public void setBlood(Blood blood) {
-        this.blood = blood;
+    public void setBlood(BloodSample bloodSample) {
+        this.bloodSample = bloodSample;
     }
 
     public boolean isPiercing() {

@@ -1,6 +1,5 @@
 package com.isa.service;
 
-import com.isa.config.SecurityUtils;
 import com.isa.domain.dto.ChangePasswordDTO;
 import com.isa.domain.dto.UserDTO;
 import com.isa.domain.model.Appointment;
@@ -30,9 +29,6 @@ public class UserService {
 
     @Autowired
     private CenterAccountRepository centerAccountRepository;
-
-    @Autowired
-    private CenterAccountService centerAccountService;
 
     @Autowired
     private AppointmentService appointmentService;
@@ -81,20 +77,11 @@ public class UserService {
         return Role.valueOf(role);
     }
 
-    public User getCurrentUser() {
-
-        String email = SecurityUtils.getCurrentUserLogin().get();
-
-        return userRepository.getByEmail(email);
-    }
-
     public Optional<User> get(long userId) {
         return userRepository.findById(userId);
     }
 
-    public User changePassword(ChangePasswordDTO changePasswordDTO) {
-        User user = getCurrentUser();
-
+    public User changePassword(ChangePasswordDTO changePasswordDTO, User user) {
         if (user == null) {
             return null;
         }
@@ -105,13 +92,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateProfile(UserDTO userDTO) {
-        User user = getCurrentUser();
-
-        if (user == null) {
-            return null;
-        }
-
+    public User updateProfile(UserDTO userDTO, User user) {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setAddress(userDTO.getAddress());

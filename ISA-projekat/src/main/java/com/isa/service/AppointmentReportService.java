@@ -2,15 +2,15 @@ package com.isa.service;
 
 import com.isa.domain.dto.AppointmentReportDto;
 import com.isa.domain.model.AppointmentReport;
-import com.isa.domain.model.Blood;
+import com.isa.domain.model.BloodSample;
 import com.isa.domain.model.Equipment;
+import com.isa.domain.model.User;
 import com.isa.enums.BloodType;
 import com.isa.exception.NotFoundException;
 import com.isa.repository.AppointmentReportRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class AppointmentReportService {
@@ -18,7 +18,6 @@ public class AppointmentReportService {
     private final AppointmentReportRepository appointmentReportRepository;
     private final BloodService bloodService;
 
-    private final UserService userService;
     private final EquipmentService equipmentService;
 
 
@@ -26,12 +25,11 @@ public class AppointmentReportService {
     public AppointmentReportService(AppointmentReportRepository appointmentReportRepository, BloodService bloodService, UserService userService, EquipmentService equipmentService) {
         this.appointmentReportRepository = appointmentReportRepository;
         this.bloodService = bloodService;
-        this.userService = userService;
         this.equipmentService = equipmentService;
     }
 
     @Transactional
-    public AppointmentReport create(AppointmentReportDto appointmentReportDto) {
+    public AppointmentReport create(AppointmentReportDto appointmentReportDto, User user) {
         final AppointmentReport appointmentReport = new AppointmentReport();
         appointmentReport.setBagType(appointmentReportDto.getBagType());
         appointmentReport.setBloodType(BloodType.valueOf(appointmentReportDto.getBloodType()));
@@ -54,11 +52,11 @@ public class AppointmentReportService {
         appointmentReport.setDenied(Boolean.parseBoolean(appointmentReportDto.getDenied()));
         appointmentReport.setReasonForDenying(appointmentReportDto.getReasonForDenying());
         appointmentReport.setEquipmentAmount(Double.parseDouble(appointmentReportDto.getEquipmentAmount()));
-        final Blood blood = new Blood();
-        blood.setAmount(Double.parseDouble(appointmentReportDto.getBloodAmount()));
-        blood.setBloodType(BloodType.valueOf(appointmentReportDto.getBloodType()));
-        blood.setCenterAccount(userService.getCurrentUser().getCenterAccount());
-        bloodService.create(blood);
+        final BloodSample bloodSample = new BloodSample();
+        bloodSample.setAmount(Double.parseDouble(appointmentReportDto.getBloodAmount()));
+        bloodSample.setBloodType(BloodType.valueOf(appointmentReportDto.getBloodType()));
+        bloodSample.setCenterAccount(user.getCenterAccount());
+        bloodService.create(bloodSample);
 
         equipment.setAmount(equipment.getAmount() - Double.parseDouble(appointmentReportDto.getEquipmentAmount()));
         equipmentService.save(equipment);

@@ -1,19 +1,23 @@
 package com.isa.domain.dto;
 
 
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class LoginDTO {
 
-    private String email;
+    @NotNull
+    private String username;
+
+    @NotNull
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -27,7 +31,7 @@ public class LoginDTO {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("email", email)
+                .append("username", username)
                 .append("password", password)
                 .toString();
     }

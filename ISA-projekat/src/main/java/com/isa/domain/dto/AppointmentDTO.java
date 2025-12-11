@@ -2,16 +2,16 @@ package com.isa.domain.dto;
 
 public class AppointmentDTO {
 
-    private String date;
+    private String dateAndTime;
     private String duration;
     private Long adminOfCenterId;
 
-    public String getDate() {
-        return date;
+    public String getDateAndTime() {
+        return dateAndTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateAndTime(String dateAndTime) {
+        this.dateAndTime = dateAndTime;
     }
 
     public String getDuration() {

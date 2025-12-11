@@ -3,6 +3,12 @@ package com.isa.config;
 
 import com.isa.enums.Role;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,15 +43,15 @@ public class JwtFilter extends GenericFilterBean {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
         try {
-            final String authorizationHeader = httpServletRequest.getHeader("Authorization");
-            final String token = authorizationHeader.substring("Bearer ".length());
-            final long userId = jwtService.getUserId(token);
-            final Role role = jwtService.getRole(token);
-            final Principal principal = new Principal(userId, role);
-            final Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, List.of((GrantedAuthority) role::name));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            jwtService.extractToken(httpServletRequest)
+                    .ifPresent(token -> {
+                        final long userId = jwtService.getUserId(token);
+                        final Role role = jwtService.getRole(token);
+                        final Principal principal = new Principal(userId, role);
+                        final Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, List.of((GrantedAuthority) role::name));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    });
             filterChain.doFilter(servletRequest, servletResponse);
-
         } catch (ExpiredJwtException e) {
             LOG.debug("Security exception for user {} - {}. Expired token.", e.getClaims().getSubject(), e.getMessage());
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -32,7 +32,7 @@ CREATE TABLE `user`
     `date_created`      datetime     NOT NULL,
     `date_updated`      datetime     DEFAULT NULL,
     `deleted`           bit(1)       NOT NULL,
-    `email`             varchar(255) NOT NULL,
+    `email`             varchar(255) NOT NULL UNIQUE,
     `first_name`        varchar(255) NOT NULL,
     `password`          varchar(255) NOT NULL,
     `address`           varchar(255) NOT NULL,
@@ -110,8 +110,8 @@ CREATE TABLE `feedback`
     FOREIGN KEY (`appointment_id`) REFERENCES Appointment (id)
 );
 
-DROP TABLE IF EXISTS `blood`;
-CREATE TABLE `blood`
+DROP TABLE IF EXISTS `bloodSample`;
+CREATE TABLE `bloodSample`
 (
     `id`                bigint(20) NOT NULL AUTO_INCREMENT,
     `date_created`      datetime   NOT NULL,
@@ -172,52 +172,52 @@ insert into `user`(date_created, date_updated, deleted, email, first_name, passw
                    role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
                    points, latitude, longitude)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'nebojsa@gmail.com', 'Nebojsa',
-        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'ADMIN_CENTER',
+        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'ADMIN_SYSTEM',
         'Bogosavljev', false, '3213213', 'MALE', '', '', 1, 0, 45, 44);
 
 insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
                    role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
                    points, latitude, longitude)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test@gmail.com', 'Marko',
-        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'USER',
+        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'Markovic', false, '3213213', 'MALE', '', '', null, 0, 41, 41);
 
 insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
                    role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
                    points, latitude, longitude)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test2@gmail.com', 'Bojan',
-        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'USER',
+        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'Braun', false, '3213213', 'MALE', '', '', null, 0, 33, 43);
 
 insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
                    role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
                    points, latitude, longitude)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test3@gmail.com', 'Igor',
-        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'USER',
+        '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'igic', false, '3213213', 'MALE', '', '', null, 0, 41, 41);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'A', 11, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'A', 2, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'B', 3, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'B', 4, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'AB', 1, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'AB', 2, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'ZERO', 2, 1);
 
-insert into `blood`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
+insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
 VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'ZERO', 3, 1);
 
 insert into `poll`(date_created, date_updated, deleted, blood_id, weight, sickness, infection,

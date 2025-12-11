@@ -1,1 +1,8 @@
-rootProject.name = 'Hospital system'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'ISA-projekat'

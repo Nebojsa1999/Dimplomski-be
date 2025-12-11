@@ -1,5 +1,6 @@
 package com.isa.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,12 @@ public class ExceptionResolver {
     protected ResponseEntity<?> illegalArgument(IllegalArgumentException exception, WebRequest request) {
         LOG.error("Illegal argument", exception);
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> notFoundException(HttpServletRequest request, NotFoundException exception) {
+        LOG.error("Nor found exception", exception);
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

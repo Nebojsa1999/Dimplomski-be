@@ -5,7 +5,8 @@ import com.isa.enums.BloodType;
 import jakarta.persistence.*;
 
 @Entity
-public class Blood extends AbstractEntity {
+@Table(name = "Blood")
+public class BloodSample extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;

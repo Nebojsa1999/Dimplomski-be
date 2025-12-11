@@ -2,22 +2,22 @@ package com.isa.domain.dto;
 
 public class AppointmentDateDto {
 
-    private Long centerAccountId;
-    private String date;
+    private Long adminOfCenterId;
+    private String dateAndTime;
 
-    public Long getCenterAccountId() {
-        return centerAccountId;
+    public Long getAdminOfCenterId() {
+        return adminOfCenterId;
     }
 
-    public void setCenterAccountId(Long centerAccountId) {
-        this.centerAccountId = centerAccountId;
+    public void setAdminOfCenterId(Long adminOfCenterId) {
+        this.adminOfCenterId = adminOfCenterId;
     }
 
-    public String getDate() {
-        return date;
+    public String getDateAndTime() {
+        return dateAndTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateAndTime(String dateAndTime) {
+        this.dateAndTime = dateAndTime;
     }
 }
