@@ -1,45 +1,40 @@
 package com.isa.domain.model;
 
+import com.isa.enums.AppointmentStatus;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import java.time.Instant;
 
 @Entity
 public class Appointment extends AbstractEntity {
 
     @ManyToOne
-    @JoinColumn(name = "center_account_id")
-    private CenterAccount centerAccount; //center account has more appointments manyToOne
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital; //hospital has more appointments manyToOne
 
     private Instant dateAndTime;
 
     private int duration;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private User admin;
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private User patient;
 
-    @OneToOne
-    @JoinColumn(name = "poll_id")
-    private Poll poll;
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus appointmentStatus;
 
-    private boolean completedAppointment;
-
-    public CenterAccount getCenterAccount() {
-        return centerAccount;
+    public Hospital getHospital() {
+        return hospital;
     }
 
-    public void setCenterAccount(CenterAccount centerAccount) {
-        this.centerAccount = centerAccount;
+    public void setHospital(Hospital hospital) {
+        this.hospital = hospital;
     }
 
     public Instant getDateAndTime() {
@@ -58,12 +53,12 @@ public class Appointment extends AbstractEntity {
         this.duration = duration;
     }
 
-    public User getAdmin() {
-        return admin;
+    public User getDoctor() {
+        return doctor;
     }
 
-    public void setAdmin(User admin) {
-        this.admin = admin;
+    public void setDoctor(User doctor) {
+        this.doctor = doctor;
     }
 
     public User getPatient() {
@@ -74,32 +69,23 @@ public class Appointment extends AbstractEntity {
         this.patient = patient;
     }
 
-    public Poll getPoll() {
-        return poll;
+    public AppointmentStatus getAppointmentStatus() {
+        return appointmentStatus;
     }
 
-    public void setPoll(Poll poll) {
-        this.poll = poll;
-    }
-
-    public boolean isCompletedAppointment() {
-        return completedAppointment;
-    }
-
-    public void setCompletedAppointment(boolean completedAppointment) {
-        this.completedAppointment = completedAppointment;
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("centerAccount", centerAccount)
+                .append("hospital", hospital)
                 .append("dateAndTime", dateAndTime)
                 .append("duration", duration)
-                .append("admin", admin)
+                .append("doctor", doctor)
                 .append("patient", patient)
-                .append("poll", poll)
-                .append("completedAppointment", completedAppointment)
+                .append("appointmentStatus", appointmentStatus)
                 .toString();
     }
 }

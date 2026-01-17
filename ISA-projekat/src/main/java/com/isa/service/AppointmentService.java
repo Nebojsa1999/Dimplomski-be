@@ -2,7 +2,8 @@ package com.isa.service;
 
 import com.isa.domain.dto.AppointmentDTO;
 import com.isa.domain.model.Appointment;
-import com.isa.domain.model.CenterAccount;
+import com.isa.domain.model.Hospital;
+import com.isa.enums.AppointmentStatus;
 import com.isa.exception.NotFoundException;
 import com.isa.repository.AppointmentRepository;
 import com.isa.repository.UserRepository;
@@ -31,22 +32,22 @@ public class AppointmentService {
     public Appointment create(AppointmentDTO appointmentDTO) {
         final Appointment appointment = new Appointment();
         appointment.setDuration(Integer.parseInt(appointmentDTO.getDuration()));
-        appointment.setAdmin(userRepository.findById(appointmentDTO.getAdminOfCenterId()).orElseThrow(NotFoundException::new));
+        appointment.setDoctor(userRepository.findById(appointmentDTO.getDoctorId()).orElseThrow(NotFoundException::new));
         appointment.setDateAndTime(Instant.parse(appointmentDTO.getDateAndTime()));
-        appointment.setCenterAccount(appointment.getAdmin().getCenterAccount());
+        appointment.setHospital(appointment.getDoctor().getHospital());
         appointmentRepository.save(appointment);
         return appointment;
     }
 
-    public List<Appointment> getFreeAppointments(CenterAccount centerAccount) {
-        return appointmentRepository.findAllByCenterAccountId(centerAccount.getId()).stream()
+    public List<Appointment> getFreeAppointments(Hospital hospital) {
+        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
                 .filter(appointment -> appointment.getPatient() == null  && appointment.getDateAndTime().isAfter(Instant.now()))
                 .toList();
     }
 
-    public List<Appointment> getAppointmentsForCenterAccount(CenterAccount centerAccount, boolean isCompleted) {
-        return appointmentRepository.findAllByCenterAccountId(centerAccount.getId()).stream()
-                .filter(appointment -> appointment.getPatient() != null && (isCompleted != appointment.isCompletedAppointment()))
+    public List<Appointment> getAppointmentsForHospital(Hospital hospital, AppointmentStatus appointmentStatus) {
+        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
+                .filter(appointment -> appointment.getPatient() != null && appointmentStatus == appointment.getAppointmentStatus())
                 .toList();
     }
 
@@ -63,12 +64,12 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
-    public List<Appointment> getScheduledAndNotFinishedAppointmentsBasedOnDate(CenterAccount centerAccount, String date) {
+    public List<Appointment> getScheduledAndNotFinishedAppointmentsBasedOnDate(Hospital hospital, String date) {
         final DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-M-d");
         final LocalDate ldt = LocalDate.parse(date, f);
 
-        return appointmentRepository.findAllByCenterAccountId(centerAccount.getId()).stream()
-                .filter(appointment -> appointment.getPatient() != null && !appointment.isCompletedAppointment()
+        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
+                .filter(appointment -> appointment.getPatient() != null && appointment.getAppointmentStatus() == AppointmentStatus.SCHEDULED
                 && appointment.getDateAndTime().atOffset(ZoneOffset.UTC).toLocalDate().equals(ldt))
                 .toList();
     }

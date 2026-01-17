@@ -2,7 +2,6 @@ package com.isa.service;
 
 import com.isa.domain.dto.AppointmentReportDto;
 import com.isa.domain.model.AppointmentReport;
-import com.isa.domain.model.BloodSample;
 import com.isa.domain.model.Equipment;
 import com.isa.domain.model.User;
 import com.isa.enums.BloodType;
@@ -16,15 +15,13 @@ import org.springframework.stereotype.Service;
 public class AppointmentReportService {
 
     private final AppointmentReportRepository appointmentReportRepository;
-    private final BloodService bloodService;
 
     private final EquipmentService equipmentService;
 
 
     @Autowired
-    public AppointmentReportService(AppointmentReportRepository appointmentReportRepository, BloodService bloodService, UserService userService, EquipmentService equipmentService) {
+    public AppointmentReportService(AppointmentReportRepository appointmentReportRepository, UserService userService, EquipmentService equipmentService) {
         this.appointmentReportRepository = appointmentReportRepository;
-        this.bloodService = bloodService;
         this.equipmentService = equipmentService;
     }
 
@@ -52,11 +49,6 @@ public class AppointmentReportService {
         appointmentReport.setDenied(Boolean.parseBoolean(appointmentReportDto.getDenied()));
         appointmentReport.setReasonForDenying(appointmentReportDto.getReasonForDenying());
         appointmentReport.setEquipmentAmount(Double.parseDouble(appointmentReportDto.getEquipmentAmount()));
-        final BloodSample bloodSample = new BloodSample();
-        bloodSample.setAmount(Double.parseDouble(appointmentReportDto.getBloodAmount()));
-        bloodSample.setBloodType(BloodType.valueOf(appointmentReportDto.getBloodType()));
-        bloodSample.setCenterAccount(user.getCenterAccount());
-        bloodService.create(bloodSample);
 
         equipment.setAmount(equipment.getAmount() - Double.parseDouble(appointmentReportDto.getEquipmentAmount()));
         equipmentService.save(equipment);

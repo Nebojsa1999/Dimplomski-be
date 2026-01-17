@@ -2,7 +2,7 @@ package com.isa;
 
 import com.isa.exception.NotFoundException;
 import com.isa.service.AppointmentService;
-import com.isa.service.CenterAccountService;
+import com.isa.service.HospitalService;
 import com.isa.service.FeedbackService;
 import com.isa.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ class IsaApplicationTests {
     private AppointmentService appointmentService;
 
     @Autowired
-    private CenterAccountService centerAccountService;
+    private HospitalService hospitalService;
 
     @Test
     void contextLoads() {
@@ -31,7 +31,7 @@ class IsaApplicationTests {
 
     @Test
     public void averageTest() {
-        Double averageRating = centerAccountService.getAverageRating(appointmentService.get(1).orElseThrow(NotFoundException::new));
+        Double averageRating = hospitalService.getAverageRating(appointmentService.get(1).orElseThrow(NotFoundException::new));
         Assertions.assertEquals(8, averageRating);
     }
 

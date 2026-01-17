@@ -59,7 +59,7 @@ public class User extends AbstractEntity {
     private String occupationInfo;
 
     @ManyToOne
-    private CenterAccount centerAccount;
+    private Hospital hospital;
 
     private double points;
 
@@ -191,12 +191,12 @@ public class User extends AbstractEntity {
         this.occupationInfo = occupationInfo;
     }
 
-    public CenterAccount getCenterAccount() {
-        return centerAccount;
+    public Hospital getHospital() {
+        return hospital;
     }
 
-    public void setCenterAccount(CenterAccount centerAccount) {
-        this.centerAccount = centerAccount;
+    public void setHospital(Hospital hospital) {
+        this.hospital = hospital;
     }
 
     public double getPoints() {
@@ -209,6 +209,6 @@ public class User extends AbstractEntity {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("password", password).append("email", email).append("firstName", firstName).append("lastName", lastName).append("address", address).append("city", city).append("country", country).append("latitude", latitude).append("longitude", longitude).append("phone", phone).append("firstLogin", firstLogin).append("role", role).append("personalId", personalId).append("gender", gender).append("occupation", occupation).append("occupationInfo", occupationInfo).append("centerAccount", centerAccount).append("points", points).toString();
+        return new ToStringBuilder(this).append("password", password).append("email", email).append("firstName", firstName).append("lastName", lastName).append("address", address).append("city", city).append("country", country).append("latitude", latitude).append("longitude", longitude).append("phone", phone).append("firstLogin", firstLogin).append("role", role).append("personalId", personalId).append("gender", gender).append("occupation", occupation).append("occupationInfo", occupationInfo).append("hospital", hospital).append("points", points).toString();
     }
 }

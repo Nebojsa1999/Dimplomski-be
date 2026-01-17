@@ -2,15 +2,15 @@ package com.isa.domain.dto;
 
 public class AppointmentDateDto {
 
-    private Long adminOfCenterId;
+    private Long doctorId;
     private String dateAndTime;
 
-    public Long getAdminOfCenterId() {
-        return adminOfCenterId;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setAdminOfCenterId(Long adminOfCenterId) {
-        this.adminOfCenterId = adminOfCenterId;
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 
     public String getDateAndTime() {

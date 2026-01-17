@@ -4,7 +4,7 @@ public class SortDto {
 
     private String sort;
 
-    private Long centerAccountId;
+    private Long hospitalId;
 
     public String getSort() {
         return sort;
@@ -14,11 +14,11 @@ public class SortDto {
         this.sort = sort;
     }
 
-    public Long getCenterAccountId() {
-        return centerAccountId;
+    public Long getHospitalId() {
+        return hospitalId;
     }
 
-    public void setCenterAccountId(Long centerAccountId) {
-        this.centerAccountId = centerAccountId;
+    public void setHospitalId(Long hospitalId) {
+        this.hospitalId = hospitalId;
     }
 }

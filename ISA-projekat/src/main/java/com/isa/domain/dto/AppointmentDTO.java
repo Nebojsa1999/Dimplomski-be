@@ -4,7 +4,7 @@ public class AppointmentDTO {
 
     private String dateAndTime;
     private String duration;
-    private Long adminOfCenterId;
+    private Long doctorId;
 
     public String getDateAndTime() {
         return dateAndTime;
@@ -22,11 +22,11 @@ public class AppointmentDTO {
         this.duration = duration;
     }
 
-    public Long getAdminOfCenterId() {
-        return adminOfCenterId;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setAdminOfCenterId(Long adminOfCenterId) {
-        this.adminOfCenterId = adminOfCenterId;
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 }

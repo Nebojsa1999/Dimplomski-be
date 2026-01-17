@@ -21,6 +21,7 @@ public class UserDTO {
     private String occupation;
     private String occupationInfo;
     private Role role;
+    private Long hospitalId;
 
     public String getEmail() {
         return email;
@@ -148,6 +149,14 @@ public class UserDTO {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Long getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Long hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     @Override

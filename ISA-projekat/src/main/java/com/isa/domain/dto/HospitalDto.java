@@ -3,7 +3,7 @@ package com.isa.domain.dto;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class CenterAccountDto {
+public class HospitalDto {
 
     private String name;
 

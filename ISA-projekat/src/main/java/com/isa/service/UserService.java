@@ -3,35 +3,38 @@ package com.isa.service;
 import com.isa.domain.dto.ChangePasswordDTO;
 import com.isa.domain.dto.UserDTO;
 import com.isa.domain.model.Appointment;
-import com.isa.domain.model.CenterAccount;
+import com.isa.domain.model.Hospital;
 import com.isa.domain.model.User;
 import com.isa.enums.Gender;
 import com.isa.enums.Role;
-import com.isa.repository.CenterAccountRepository;
+import com.isa.repository.HospitalRepository;
 import com.isa.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final HospitalRepository hospitalRepository;
+
+    private final AppointmentService appointmentService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private CenterAccountRepository centerAccountRepository;
-
-    @Autowired
-    private AppointmentService appointmentService;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, HospitalRepository hospitalRepository, AppointmentService appointmentService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.hospitalRepository = hospitalRepository;
+        this.appointmentService = appointmentService;
+    }
 
     @Transactional
     public User register(UserDTO userDTO) {
@@ -50,31 +53,26 @@ public class UserService {
         user.setCountry(userDTO.getCountry());
         user.setFirstLogin(true);
         user.setPhone(userDTO.getPhone());
-        final CenterAccount centerAccount = new CenterAccount();
-        centerAccount.setAddress("Address");
-        centerAccount.setName("Name");
-        centerAccount.setCity("City");
-        centerAccount.setDescription("Description");
-        centerAccount.setCountry("Country");
-        centerAccount.setLatitude(41);
-        centerAccount.setLongitude(45);
-        centerAccount.setStartTime(LocalTime.MIDNIGHT);
-        centerAccount.setEndTime(LocalTime.NOON);
+        user.setGender(Gender.valueOf(userDTO.getGender()));
+        user.setOccupationInfo(userDTO.getOccupationInfo());
+        user.setOccupation(userDTO.getOccupation());
+        user.setPersonalId(userDTO.getPersonalId());
 
-        centerAccountRepository.save(centerAccount);
-
-        user.setCenterAccount(centerAccount);
+        user.setHospital(hospitalRepository.findById(userDTO.getHospitalId()).orElseThrow());
 
         return userRepository.save(user);
     }
 
-    public List<User> getAllByCenterAccount(CenterAccount centerAccount) {
-        return userRepository.findAllByCenterAccountId(centerAccount.getId());
+    public List<User> list(String name) {
+        return name != null ? userRepository.findAllByName(name) : userRepository.findAll();
     }
 
-    public Role stringToRole(String role) {
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
 
-        return Role.valueOf(role);
+    public List<User> getAllByHospital(Hospital hospital, Role role, String name) {
+        return role != null ? userRepository.findAllByHospitalIdAndRole(hospital.getId(), role, name) : userRepository.findAllByHospitalId(hospital.getId(), name);
     }
 
     public Optional<User> get(long userId) {
@@ -109,14 +107,6 @@ public class UserService {
         user.setPersonalId(userDTO.getPersonalId());
         user.setGender(Gender.valueOf(userDTO.getGender()));
         return userRepository.save(user);
-    }
-
-    public List<User> findAllByRole(Role role) {
-        return userRepository.findAllByRole(role);
-    }
-
-    public List<User> search(String term, Role role) {
-        return userRepository.findAllByRoleAndFirstNameContainsOrLastNameContaining(role, term, term);
     }
 
     @Transactional

@@ -3,9 +3,177 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
-       http://www.liquibase.org/xml/ns/dbchangelog
-       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
+    <changeSet id="001-init" author="nebojsa" context="development,production">
+        <sqlFile
+                path="db/migration/V1_1__create.sql"
+                splitStatements="true"
+                stripComments="true"/>
+    </changeSet>
 
+    <changeSet id="002-create-room" author="nebojsa" context="development,production">
+        <createTable tableName="room">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
+    <changeSet id="003-create-prescription" author="nebojsa" context="development,production">
+        <createTable tableName="prescription">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="patient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doctor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="prescription"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_prescription_patient"/>
+
+        <addForeignKeyConstraint
+                baseTableName="prescription"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_prescription_doctor"/>
+    </changeSet>
+
+    <changeSet id="004-create-medication" author="nebojsa" context="development,production">
+        <createTable tableName="medication">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dosage" type="VARCHAR(255)"/>
+            <column name="frequency" type="VARCHAR(255)"/>
+            <column name="instructions" type="VARCHAR(1000)"/>
+            <column name="prescription_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="medication"
+                baseColumnNames="prescription_id"
+                referencedTableName="prescription"
+                referencedColumnNames="id"
+                constraintName="fk_medication_prescription"/>
+    </changeSet>
+
+    <changeSet id="005-create-operation-room-booking" author="nebojsa" context="development,production">
+        <createTable tableName="operation_room_booking">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="room_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doctor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="BIGINT"/>
+            <column name="start_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notes" type="VARCHAR(1000)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="room_id"
+                referencedTableName="room"
+                referencedColumnNames="id"
+                constraintName="fk_booking_room"/>
+
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_booking_doctor"/>
+
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_booking_patient"/>
+    </changeSet>
+
+    <changeSet id="006-room-add-hospital-id" author="nebojsa" context="development,production">
+        <addColumn tableName="room">
+            <column name="hospital_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="room"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_room_hospital"/>
+
+        <createIndex tableName="room" indexName="idx_room_hospital">
+            <column name="hospital_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="007-prescription-update" author="nebojsa" context="development,production">
+        <addColumn tableName="prescription">
+            <column name="issued_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="prescription">
+            <column name="notes" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="008-equipment-add-hospital-id" author="nebojsa" context="development,production">
+        <addColumn tableName="equipment">
+            <column name="hospital_id" type="BIGINT">
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="equipment"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_equipment_hospital"/>
+
+        <createIndex tableName="equipment" indexName="idx_equipment_hospital">
+            <column name="hospital_id"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

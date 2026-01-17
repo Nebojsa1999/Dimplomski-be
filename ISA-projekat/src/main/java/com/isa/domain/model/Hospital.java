@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import java.time.LocalTime;
 
 @Entity
-public class CenterAccount extends AbstractEntity {
+public class Hospital extends AbstractEntity {
     private String name;
     private String description;
     private double averageRating;

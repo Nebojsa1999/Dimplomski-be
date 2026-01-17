@@ -26,7 +26,21 @@ public class EquipmentService {
         equipmentRepository.save(equipment);
     }
 
-    public List<Equipment> getAll() {
-        return equipmentRepository.findAll();
+    public Equipment create(Equipment equipment) {
+        return equipmentRepository.save(equipment);
+    }
+
+    public Equipment update(Equipment equipment, Equipment dto) {
+        equipment.setName(dto.getName());
+        equipment.setAmount(dto.getAmount());
+       return equipmentRepository.save(equipment);
+    }
+
+    public List<Equipment> getAll(String name) {
+        return name != null ? equipmentRepository.findAllByName(name) : equipmentRepository.findAll();
+    }
+
+    public List<Equipment> findByHospitalId(long id, String name) {
+        return equipmentRepository.findAllByHospitalId(id, name);
     }
 }

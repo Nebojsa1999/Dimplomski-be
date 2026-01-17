@@ -1,11 +1,8 @@
-DROP TABLE IF EXISTS `center_account`;
+DROP TABLE IF EXISTS hospital;
 
-CREATE TABLE `center_account`
+CREATE TABLE hospital
 (
     `id`             bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`   datetime   NOT NULL,
-    `date_updated`   datetime DEFAULT NULL,
-    `deleted`        bit(1)     NOT NULL,
     `name`           varchar(255),
     `description`    varchar(255),
     `average_rating` decimal(19, 4),
@@ -19,19 +16,16 @@ CREATE TABLE `center_account`
     PRIMARY KEY (id)
 );
 
-INSERT INTO `center_account`(date_created, date_updated, deleted, name, description, average_rating, address, city,
-                             country, start_time, `end_time`, `latitude`, `longitude`)
-values ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'Center1', 'Description', 12.5, 'Address1', 'City1',
-        'Country1', '10:34:21', '18:34:23', 45, 41);
+INSERT INTO hospital( name, description, average_rating, address, city,
+                     country, start_time, `end_time`, `latitude`, `longitude`)
+values ( 'Serbmedik', 'Serbmedik hospital in Belgrade', 4.7, 'Beograski kej 12', 'Beograd',
+        'Srbija', '10:34:21', '18:34:23', 45, 41);
 
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user`
 (
     `id`                bigint(20)   NOT NULL AUTO_INCREMENT,
-    `date_created`      datetime     NOT NULL,
-    `date_updated`      datetime     DEFAULT NULL,
-    `deleted`           bit(1)       NOT NULL,
     `email`             varchar(255) NOT NULL UNIQUE,
     `first_name`        varchar(255) NOT NULL,
     `password`          varchar(255) NOT NULL,
@@ -48,90 +42,47 @@ CREATE TABLE `user`
     `gender`            varchar(255),
     `occupation`        varchar(255),
     `occupation_info`   varchar(255),
-    `center_account_id` bigint(20),
+    hospital_id bigint(20),
     `points`            decimal(19, 4),
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`center_account_id`) REFERENCES center_account (id)
-);
-
-DROP TABLE IF EXISTS `poll`;
-CREATE TABLE `poll`
-(
-    `id`                  bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`        datetime   NOT NULL,
-    `date_updated`        datetime DEFAULT NULL,
-    `deleted`             bit(1)     NOT NULL,
-    `blood_id`            bigint(20),
-    `weight`              bit(1),
-    `sickness`            bit(1),
-    `infection`           bit(1),
-    `pressure`            bit(1),
-    `therapy`             bit(1),
-    `cycle`               bit(1),
-    `dental_intervention` bit(1),
-    `piercing`            bit(1),
-    PRIMARY KEY (`id`)
+    FOREIGN KEY (hospital_id) REFERENCES hospital (id)
 );
 
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE `appointment`
 (
     `id`                    bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`          datetime   NOT NULL,
-    `date_updated`          datetime DEFAULT NULL,
-    `deleted`               bit(1)     NOT NULL,
     `date_and_time`         datetime,
-    `admin_id`              bigint(20),
+    `doctor_id`              bigint(20),
     `duration`              bigint(20),
     `patient_id`            bigint(20),
     `poll_id`               bigint(20),
-    `center_account_id`     bigint(20),
-    `completed_appointment` bit(1),
+    hospital_id     bigint(20),
+    `appointment_status` varchar(255),
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`admin_id`) REFERENCES User (id),
-    FOREIGN KEY (`patient_id`) REFERENCES User (id),
-    FOREIGN KEY (`poll_id`) REFERENCES Poll (id),
-    FOREIGN KEY (`center_account_id`) REFERENCES center_account (id)
+    FOREIGN KEY (`doctor_id`) REFERENCES user (id),
+    FOREIGN KEY (`patient_id`) REFERENCES user (id),
+    FOREIGN KEY (hospital_id) REFERENCES hospital (id)
 );
 
 DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback`
 (
     `id`             bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`   datetime   NOT NULL,
-    `date_updated`   datetime DEFAULT NULL,
-    `deleted`        bit(1)     NOT NULL,
     `grade`          bigint(20),
     `comment`        varchar(255),
     `user_id`        bigint(20),
-    `appointment_id` bigint(20),
+    hospital_id bigint(20),
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES User (id),
-    FOREIGN KEY (`appointment_id`) REFERENCES Appointment (id)
-);
-
-DROP TABLE IF EXISTS `bloodSample`;
-CREATE TABLE `bloodSample`
-(
-    `id`                bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`      datetime   NOT NULL,
-    `date_updated`      datetime DEFAULT NULL,
-    `deleted`           bit(1)     NOT NULL,
-    `blood_type`        varchar(255),
-    `amount`            decimal(19, 4),
-    `center_account_id` bigint(20),
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`center_account_id`) REFERENCES center_account (id)
+    FOREIGN KEY (`user_id`) REFERENCES user (id),
+    FOREIGN KEY (hospital_id) REFERENCES appointment (id)
 );
 
 DROP TABLE IF EXISTS `equipment`;
 CREATE TABLE `equipment`
 (
     `id`             bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`   datetime   NOT NULL,
-    `date_updated`   datetime DEFAULT NULL,
-    `deleted`        bit(1)     NOT NULL,
-    `equipment_type` varchar(255),
+    `name` varchar(255),
     `amount`         bigint(20),
     PRIMARY KEY (`id`)
 );
@@ -140,9 +91,6 @@ DROP TABLE IF EXISTS `appointment_report`;
 CREATE TABLE `appointment_report`
 (
     `id`                                                 bigint(20) NOT NULL AUTO_INCREMENT,
-    `date_created`                                       datetime   NOT NULL,
-    `date_updated`                                       datetime DEFAULT NULL,
-    `deleted`                                            bit(1)     NOT NULL,
     `blood_type`                                         varchar(255),
     `blood_amount`                                       decimal(19, 4),
     `note_to_doctor`                                     varchar(255),
@@ -167,103 +115,65 @@ CREATE TABLE `appointment_report`
     FOREIGN KEY (`equipment_id`) REFERENCES equipment (id)
 );
 
-
-insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
-                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
+insert into `user`( email, first_name, password, address, country, city, phone,
+                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, hospital_id,
                    points, latitude, longitude)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'nebojsa@gmail.com', 'Nebojsa',
+VALUES ( 'nebojsa@gmail.com', 'Nebojsa',
         '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'ADMIN_SYSTEM',
         'Bogosavljev', false, '3213213', 'MALE', '', '', 1, 0, 45, 44);
 
-insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
-                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
+insert into `user`( email, first_name, password, address, country, city, phone,
+                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, hospital_id,
                    points, latitude, longitude)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test@gmail.com', 'Marko',
+VALUES ( 'test@gmail.com', 'Marko',
         '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'Markovic', false, '3213213', 'MALE', '', '', null, 0, 41, 41);
 
-insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
-                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
+insert into `user`( email, first_name, password, address, country, city, phone,
+                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, hospital_id,
                    points, latitude, longitude)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test2@gmail.com', 'Bojan',
+VALUES ( 'test2@gmail.com', 'Bojan',
         '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'Braun', false, '3213213', 'MALE', '', '', null, 0, 33, 43);
 
-insert into `user`(date_created, date_updated, deleted, email, first_name, password, address, country, city, phone,
-                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, center_account_id,
+insert into `user`( email, first_name, password, address, country, city, phone,
+                   role, last_name, first_login, personal_id, gender, occupation, occupation_info, hospital_id,
                    points, latitude, longitude)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'test3@gmail.com', 'Igor',
+VALUES ( 'test3@gmail.com', 'Igor',
         '$2a$10$36dVOozCi/zxI01Lph5KVODLdutdC7LKbRj/YHU7uz23eRxgxM.na', 'a', 'c', 'c', 'p', 'PATIENT',
         'igic', false, '3213213', 'MALE', '', '', null, 0, 41, 41);
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'A', 11, 1);
+insert into `appointment`( date_and_time, doctor_id, duration, patient_id, poll_id,
+                          hospital_id, appointment_status)
+VALUES ( '2023-04-22 10:34:23', 1, 12, 2, 1, 1, 'COMPLETED');
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'A', 2, 1);
+insert into `appointment`( date_and_time, doctor_id, duration, patient_id, poll_id,
+                          hospital_id, appointment_status)
+VALUES ( '2023-06-22 10:34:23', 1, 12, 3, 2, 1, 'COMPLETED');
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'B', 3, 1);
+insert into `appointment`( date_and_time, doctor_id, duration, patient_id, poll_id,
+                          hospital_id, appointment_status)
+VALUES ( '2023-05-22 10:34:23', 1, 12, 4, 3, 1, 'COMPLETED');
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'B', 4, 1);
+insert into `appointment`( date_and_time, doctor_id, duration, patient_id, poll_id,
+                          hospital_id, appointment_status)
+VALUES ( '2023-05-22 10:34:23', 1, 12, 4, 1, 1, 'COMPLETED');
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'AB', 1, 1);
+insert into `appointment`( date_and_time, doctor_id, duration, patient_id, poll_id,
+                          hospital_id, appointment_status)
+VALUES ('2023-05-22 10:34:23', 1, 12, 4, 2, 1, 'COMPLETED');
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'AB', 2, 1);
+insert into `feedback`( grade, comment, user_id, hospital_id)
+VALUES ( 5, 'bla', 2, 1);
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'ZERO', 2, 1);
+insert into `feedback`( grade, comment, user_id, hospital_id)
+VALUES ( 11, 'bla', 2, 1);
 
-insert into `bloodSample`(date_created, date_updated, deleted, blood_type, amount, center_account_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 'ZERO', 3, 1);
-
-insert into `poll`(date_created, date_updated, deleted, blood_id, weight, sickness, infection,
-                   pressure, therapy, cycle, dental_intervention, piercing)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 1, true, true, true, true, true, true, true, true);
-
-insert into `poll`(date_created, date_updated, deleted, blood_id, weight, sickness, infection,
-                   pressure, therapy, cycle, dental_intervention, piercing)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 2, false, false, false, false, false, false,
-        false, false);
-
-insert into `poll`(date_created, date_updated, deleted, blood_id, weight, sickness, infection,
-                   pressure, therapy, cycle, dental_intervention, piercing)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 3, true, true, true, true, true, true, false, true);
-
-insert into `appointment`(date_created, date_updated, deleted, date_and_time, admin_id, duration, patient_id, poll_id,
-                          center_account_id, completed_appointment)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, '2023-04-22 10:34:23', 1, 12, 2, 1, 1, true);
-
-insert into `appointment`(date_created, date_updated, deleted, date_and_time, admin_id, duration, patient_id, poll_id,
-                          center_account_id, completed_appointment)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, '2023-06-22 10:34:23', 1, 12, 3, 2, 1, true);
-
-insert into `appointment`(date_created, date_updated, deleted, date_and_time, admin_id, duration, patient_id, poll_id,
-                          center_account_id, completed_appointment)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, '2023-05-22 10:34:23', 1, 12, 4, 3, 1, true);
-
-insert into `appointment`(date_created, date_updated, deleted, date_and_time, admin_id, duration, patient_id, poll_id,
-                          center_account_id, completed_appointment)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, '2023-05-22 10:34:23', 1, 12, 4, 1, 1, false);
-
-insert into `appointment`(date_created, date_updated, deleted, date_and_time, admin_id, duration, patient_id, poll_id,
-                          center_account_id, completed_appointment)
-VALUES ('2022-04-22 10:34:23', '2022-04-11 10:34:23	', false, '2023-05-22 10:34:23', 1, 12, 4, 2, 1, false);
-
-insert into `feedback`(date_created, date_updated, deleted, grade, comment, user_id, appointment_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 5, 'bla', 2, 1);
-
-insert into `feedback`(date_created, date_updated, deleted, grade, comment, user_id, appointment_id)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false, 11, 'bla', 2, 1);
-
-insert into `equipment`(date_created, date_updated, deleted, equipment_type, amount)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false,'NEEDLE',2);
-insert into `equipment`(date_created, date_updated, deleted, equipment_type, amount)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false,'COTTON_WOOL',4);
-insert into `equipment`(date_created, date_updated, deleted, equipment_type, amount)
-VALUES ('2022-04-22 10:34:23', '2022-04-22 10:34:23	', false,'SYRINGE',5);
+insert into `equipment`( name, amount)
+VALUES ('Needle',2);
+insert into `equipment`( name, amount)
+VALUES ('Cotton wool',4);
+insert into `equipment`( name, amount)
+VALUES ('Syringe',5);
 
 
