@@ -43,4 +43,14 @@ public class RoomService {
     public List<Room> findByHospitalAndFree(Hospital hospital, RoomType roomType, String name, LocalDateTime start, LocalDateTime end) {
         return roomRepository.findAvailableRooms(hospital, roomType, name, start, end);
     }
+
+    public void removeCapacity(Room room) {
+        room.setCapacity(room.getCapacity() - 1);
+        roomRepository.save(room);
+    }
+
+    public void addCapacity(Room room) {
+        room.setCapacity(room.getCapacity() + 1);
+        roomRepository.save(room);
+    }
 }

@@ -5,10 +5,10 @@ import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
-public class OperationRoomBooking extends AbstractEntity{
+public class OperationRoomBooking extends AbstractEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "room_id")
@@ -22,22 +22,12 @@ public class OperationRoomBooking extends AbstractEntity{
     @JoinColumn(name = "patient_id")
     private User patient;
 
-    private LocalDateTime startTime;
+    private Instant startTime;
 
-    private LocalDateTime endTime;
+    private Instant endTime;
 
     @Enumerated(EnumType.STRING)
     private OperationType operationType;
-
-    private String notes;
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
     public OperationType getOperationType() {
         return operationType;
@@ -47,19 +37,19 @@ public class OperationRoomBooking extends AbstractEntity{
         this.operationType = operationType;
     }
 
-    public LocalDateTime getEndTime() {
+    public Instant getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Instant endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getStartTime() {
+    public Instant getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Instant startTime) {
         this.startTime = startTime;
     }
 
@@ -91,7 +81,6 @@ public class OperationRoomBooking extends AbstractEntity{
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("id", id)
-                .append("notes", notes)
                 .append("operationType", operationType)
                 .append("endTime", endTime)
                 .append("startTime", startTime)

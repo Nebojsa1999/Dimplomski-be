@@ -27,15 +27,13 @@ public class HospitalApi {
 
     private final EquipmentService equipmentService;
     private final RoomService roomService;
-    private final OperationRoomBookingService operationRoomBookingService;
 
     @Autowired
-    public HospitalApi(HospitalService hospitalService, UserService userService, EquipmentService equipmentService, RoomService roomService, OperationRoomBookingService operationRoomBookingService) {
+    public HospitalApi(HospitalService hospitalService, UserService userService, EquipmentService equipmentService, RoomService roomService) {
         this.hospitalService = hospitalService;
         this.userService = userService;
         this.equipmentService = equipmentService;
         this.roomService = roomService;
-        this.operationRoomBookingService = operationRoomBookingService;
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -129,12 +127,6 @@ public class HospitalApi {
     public ResponseEntity<List<User>> getUsersFromHospital(@PathVariable long id, @RequestParam(required = false) Role role, @RequestParam(required = false) String name) {
         final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(userService.getAllByHospital(hospital, role, name), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
-    @PostMapping(path = "/operation-room-booking")
-    public ResponseEntity<OperationRoomBooking> createBooking(@RequestBody OperationRoomBooking operationRoomBooking) {
-        return new ResponseEntity<>(operationRoomBookingService.create(operationRoomBooking), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")

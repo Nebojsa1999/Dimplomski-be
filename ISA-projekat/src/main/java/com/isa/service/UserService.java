@@ -5,6 +5,7 @@ import com.isa.domain.dto.UserDTO;
 import com.isa.domain.model.Appointment;
 import com.isa.domain.model.Hospital;
 import com.isa.domain.model.User;
+import com.isa.enums.AppointmentStatus;
 import com.isa.enums.Gender;
 import com.isa.enums.Role;
 import com.isa.repository.HospitalRepository;
@@ -115,6 +116,7 @@ public class UserService {
         patient.setPoints(patient.getPoints() - 1);
         userRepository.save(patient);
         appointment.setPatient(null);
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
         appointmentService.save(appointment);
     }
 }

@@ -34,6 +34,10 @@ dependencies {
 
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'org.liquibase:liquibase-core:4.23.2'
+    implementation 'org.apache.poi:poi-ooxml:5.2.0'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.30'
+
+    implementation 'org.apache.pdfbox:fontbox:2.0.30'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.4'
 }

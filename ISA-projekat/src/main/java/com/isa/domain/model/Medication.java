@@ -7,16 +7,23 @@ import jakarta.persistence.ManyToOne;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.time.Instant;
+
 @Entity
 public class Medication extends AbstractEntity {
+
     private String name;
     private String dosage;
     private String frequency;
     private String instructions;
 
-    @ManyToOne
-    @JoinColumn(name = "prescription_id")
-    private Prescription prescription;
+    @ManyToOne()
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
+    private Instant issuedAt;
+
+    private String notes;
 
     public String getName() {
         return name;
@@ -50,23 +57,39 @@ public class Medication extends AbstractEntity {
         this.instructions = instructions;
     }
 
-    public Prescription getPrescription() {
-        return prescription;
+    public Appointment getAppointment() {
+        return appointment;
     }
 
-    public void setPrescription(Prescription prescription) {
-        this.prescription = prescription;
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public Instant getIssuedAt() {
+        return issuedAt;
+    }
+
+    public void setIssuedAt(Instant issuedAt) {
+        this.issuedAt = issuedAt;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("id", id)
                 .append("name", name)
                 .append("dosage", dosage)
                 .append("frequency", frequency)
                 .append("instructions", instructions)
-                .append("prescription", prescription)
+                .append("issuedAt", issuedAt)
+                .append("notes", notes)
                 .toString();
     }
 }

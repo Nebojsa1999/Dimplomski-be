@@ -3,6 +3,8 @@ package com.isa.domain.model;
 import com.isa.enums.BloodType;
 
 import jakarta.persistence.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 public class AppointmentReport extends AbstractEntity{
@@ -10,45 +12,29 @@ public class AppointmentReport extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-    private double bloodAmount;
+    private String pastMedicalHistory;
 
-    private String noteToDoctor;
+    private String allergies;
 
-    private String copperSulfate;
+    private String familyHistory;
 
-    private String hemoglobinometer;
+    private String bloodPressure;
 
-    private String lungs;
+    private String hearthRate;
 
-    private String heart;
+    private String diagnosis;
 
-    private String TA;
+    @ManyToOne()
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
 
-    private String TT;
+    public Appointment getAppointment() {
+        return appointment;
+    }
 
-    private String TV;
-
-    private String bagType;
-
-    private String note;
-
-    private String punctureSite;
-
-    private String startOfGiving;
-
-    private String endOfGiving;
-
-    private String reasonForPrematureTerminationOfBloodDonation;
-
-    private boolean denied;
-
-    private String reasonForDenying;
-
-    @OneToOne
-    @JoinColumn(name = "equipment_id")
-    private Equipment equipment;
-
-    private double equipmentAmount;
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 
     public BloodType getBloodType() {
         return bloodType;
@@ -58,155 +44,64 @@ public class AppointmentReport extends AbstractEntity{
         this.bloodType = bloodType;
     }
 
-    public double getBloodAmount() {
-        return bloodAmount;
+    public String getPastMedicalHistory() {
+        return pastMedicalHistory;
     }
 
-    public void setBloodAmount(double bloodAmount) {
-        this.bloodAmount = bloodAmount;
+    public void setPastMedicalHistory(String pastMedicalHistory) {
+        this.pastMedicalHistory = pastMedicalHistory;
     }
 
-    public String getNoteToDoctor() {
-        return noteToDoctor;
+    public String getAllergies() {
+        return allergies;
     }
 
-    public void setNoteToDoctor(String noteToDoctor) {
-        this.noteToDoctor = noteToDoctor;
+    public void setAllergies(String allergies) {
+        this.allergies = allergies;
     }
 
-    public String getCopperSulfate() {
-        return copperSulfate;
+    public String getFamilyHistory() {
+        return familyHistory;
     }
 
-    public void setCopperSulfate(String copperSulfate) {
-        this.copperSulfate = copperSulfate;
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
     }
 
-    public String getHemoglobinometer() {
-        return hemoglobinometer;
+    public String getBloodPressure() {
+        return bloodPressure;
     }
 
-    public void setHemoglobinometer(String hemoglobinometer) {
-        this.hemoglobinometer = hemoglobinometer;
+    public void setBloodPressure(String bloodPressure) {
+        this.bloodPressure = bloodPressure;
     }
 
-    public String getLungs() {
-        return lungs;
+    public String getHearthRate() {
+        return hearthRate;
     }
 
-    public void setLungs(String lungs) {
-        this.lungs = lungs;
+    public void setHearthRate(String hearthRate) {
+        this.hearthRate = hearthRate;
     }
 
-    public String getHeart() {
-        return heart;
+    public String getDiagnosis() {
+        return diagnosis;
     }
 
-    public void setHeart(String heart) {
-        this.heart = heart;
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
-    public String getTA() {
-        return TA;
-    }
-
-    public void setTA(String TA) {
-        this.TA = TA;
-    }
-
-    public String getTT() {
-        return TT;
-    }
-
-    public void setTT(String TT) {
-        this.TT = TT;
-    }
-
-    public String getTV() {
-        return TV;
-    }
-
-    public void setTV(String TV) {
-        this.TV = TV;
-    }
-
-    public String getBagType() {
-        return bagType;
-    }
-
-    public void setBagType(String bagType) {
-        this.bagType = bagType;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getPunctureSite() {
-        return punctureSite;
-    }
-
-    public void setPunctureSite(String punctureSite) {
-        this.punctureSite = punctureSite;
-    }
-
-    public String getStartOfGiving() {
-        return startOfGiving;
-    }
-
-    public void setStartOfGiving(String startOfGiving) {
-        this.startOfGiving = startOfGiving;
-    }
-
-    public String getEndOfGiving() {
-        return endOfGiving;
-    }
-
-    public void setEndOfGiving(String endOfGiving) {
-        this.endOfGiving = endOfGiving;
-    }
-
-    public String getReasonForPrematureTerminationOfBloodDonation() {
-        return reasonForPrematureTerminationOfBloodDonation;
-    }
-
-    public void setReasonForPrematureTerminationOfBloodDonation(String reasonForPrematureTerminationOfBloodDonation) {
-        this.reasonForPrematureTerminationOfBloodDonation = reasonForPrematureTerminationOfBloodDonation;
-    }
-
-    public Equipment getEquipment() {
-        return equipment;
-    }
-
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
-    }
-
-    public double getEquipmentAmount() {
-        return equipmentAmount;
-    }
-
-    public void setEquipmentAmount(double equipmentAmount) {
-        this.equipmentAmount = equipmentAmount;
-    }
-
-    public boolean isDenied() {
-        return denied;
-    }
-
-    public void setDenied(boolean denied) {
-        this.denied = denied;
-    }
-
-    public String getReasonForDenying() {
-        return reasonForDenying;
-    }
-
-    public void setReasonForDenying(String reasonForDenying) {
-        this.reasonForDenying = reasonForDenying;
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("bloodType", bloodType)
+                .append("pastMedicalHistory", pastMedicalHistory)
+                .append("allergies", allergies)
+                .append("familyHistory", familyHistory)
+                .append("bloodPressure", bloodPressure)
+                .append("hearthRate", hearthRate)
+                .append("diagnosis", diagnosis)
+                .toString();
     }
 }

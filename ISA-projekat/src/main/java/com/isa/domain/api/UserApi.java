@@ -2,12 +2,9 @@ package com.isa.domain.api;
 
 import com.isa.config.Principal;
 import com.isa.domain.dto.ChangePasswordDTO;
-import com.isa.domain.dto.PrescriptionDto;
 import com.isa.domain.dto.UserDTO;
-import com.isa.domain.model.Prescription;
 import com.isa.domain.model.User;
 import com.isa.exception.NotFoundException;
-import com.isa.service.PrescriptionService;
 import com.isa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,12 +21,10 @@ import java.util.List;
 public class UserApi {
 
     private final UserService userService;
-    private final PrescriptionService prescriptionService;
 
     @Autowired
-    public UserApi(UserService userService, PrescriptionService prescriptionService) {
+    public UserApi(UserService userService) {
         this.userService = userService;
-        this.prescriptionService = prescriptionService;
     }
 
     @PostMapping(path = "/register")
@@ -72,12 +67,6 @@ public class UserApi {
     public ResponseEntity<User> updateProfile(@RequestBody UserDTO userDTO, @AuthenticationPrincipal Principal principal) {
         final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(userService.updateProfile(userDTO, user), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
-    @PostMapping(path = "/prescription")
-    public ResponseEntity<Prescription> createPrescription(@RequestBody PrescriptionDto prescription) {
-        return new ResponseEntity<>(prescriptionService.create(prescription.getMedication(), prescription.getPrescription()), HttpStatus.CREATED);
     }
 }
 

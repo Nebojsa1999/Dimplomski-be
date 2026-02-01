@@ -30,35 +30,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="003-create-prescription" author="nebojsa" context="development,production">
-        <createTable tableName="prescription">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="patient_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="doctor_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addForeignKeyConstraint
-                baseTableName="prescription"
-                baseColumnNames="patient_id"
-                referencedTableName="user"
-                referencedColumnNames="id"
-                constraintName="fk_prescription_patient"/>
-
-        <addForeignKeyConstraint
-                baseTableName="prescription"
-                baseColumnNames="doctor_id"
-                referencedTableName="user"
-                referencedColumnNames="id"
-                constraintName="fk_prescription_doctor"/>
-    </changeSet>
-
-    <changeSet id="004-create-medication" author="nebojsa" context="development,production">
+    <changeSet id="003-create-medication" author="nebojsa" context="development,production">
         <createTable tableName="medication">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -69,20 +41,28 @@
             <column name="dosage" type="VARCHAR(255)"/>
             <column name="frequency" type="VARCHAR(255)"/>
             <column name="instructions" type="VARCHAR(1000)"/>
-            <column name="prescription_id" type="BIGINT">
+            <column name="appointment_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
         <addForeignKeyConstraint
                 baseTableName="medication"
-                baseColumnNames="prescription_id"
-                referencedTableName="prescription"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
                 referencedColumnNames="id"
-                constraintName="fk_medication_prescription"/>
+                constraintName="fk_appointment"/>
+        <addColumn tableName="medication">
+            <column name="issued_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="medication">
+            <column name="notes" type="VARCHAR(255)">
+            </column>
+        </addColumn>
     </changeSet>
 
-    <changeSet id="005-create-operation-room-booking" author="nebojsa" context="development,production">
+    <changeSet id="004-create-operation-room-booking" author="nebojsa" context="development,production">
         <createTable tableName="operation_room_booking">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -94,16 +74,15 @@
                 <constraints nullable="false"/>
             </column>
             <column name="patient_id" type="BIGINT"/>
-            <column name="start_time" type="TIMESTAMP">
+            <column name="start_time" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="end_time" type="TIMESTAMP">
+            <column name="end_time" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="operation_type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="notes" type="VARCHAR(1000)"/>
         </createTable>
 
         <addForeignKeyConstraint
@@ -128,7 +107,7 @@
                 constraintName="fk_booking_patient"/>
     </changeSet>
 
-    <changeSet id="006-room-add-hospital-id" author="nebojsa" context="development,production">
+    <changeSet id="005-room-add-hospital-id" author="nebojsa" context="development,production">
         <addColumn tableName="room">
             <column name="hospital_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -147,19 +126,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="007-prescription-update" author="nebojsa" context="development,production">
-        <addColumn tableName="prescription">
-            <column name="issued_at" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-        <addColumn tableName="prescription">
-            <column name="notes" type="VARCHAR(255)">
-            </column>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="008-equipment-add-hospital-id" author="nebojsa" context="development,production">
+    <changeSet id="006-equipment-add-hospital-id" author="nebojsa" context="development,production">
         <addColumn tableName="equipment">
             <column name="hospital_id" type="BIGINT">
             </column>

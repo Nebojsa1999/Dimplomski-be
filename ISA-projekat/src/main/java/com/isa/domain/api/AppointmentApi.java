@@ -1,27 +1,24 @@
 package com.isa.domain.api;
 
 import com.isa.config.Principal;
-import com.isa.domain.dto.AppointmentDTO;
-import com.isa.domain.dto.AppointmentDateDto;
-import com.isa.domain.dto.AppointmentReportDto;
-import com.isa.domain.dto.DenyUserDto;
-import com.isa.domain.model.Appointment;
-import com.isa.domain.model.AppointmentReport;
-import com.isa.domain.model.Hospital;
-import com.isa.domain.model.User;
+import com.isa.domain.dto.*;
+import com.isa.domain.model.*;
 import com.isa.enums.AppointmentStatus;
 import com.isa.exception.NotFoundException;
-import com.isa.service.AppointmentReportService;
-import com.isa.service.AppointmentService;
-import com.isa.service.HospitalService;
-import com.isa.service.UserService;
+import com.isa.service.*;
+import com.isa.util.PdfReportGenerator;
+import com.isa.util.PrescriptionPdfReport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -33,13 +30,32 @@ public class AppointmentApi {
     private final AppointmentReportService appointmentReportService;
     private final HospitalService hospitalService;
     private final UserService userService;
+    private final MedicationService medicationService;
+    private final OperationRoomBookingService operationRoomBookingService;
+    private final RoomService roomService;
 
     @Autowired
-    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService) {
+    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService, MedicationService medicationService, OperationRoomBookingService operationRoomBookingService, RoomService roomService) {
         this.appointmentService = appointmentService;
         this.appointmentReportService = appointmentReportService;
         this.hospitalService = hospitalService;
         this.userService = userService;
+        this.medicationService = medicationService;
+        this.operationRoomBookingService = operationRoomBookingService;
+        this.roomService = roomService;
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @GetMapping(path = "/appointments")
+    public ResponseEntity<List<Appointment>> list(@RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
+        return new ResponseEntity<>(appointmentService.list(appointmentStatus, from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
+    @GetMapping(path = "/{id}/appointments")
+    public ResponseEntity<List<Appointment>> listByHospitalId(@PathVariable long id, @RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
+        final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(appointmentService.listByHospital(appointmentStatus,  from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null, hospital), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -54,6 +70,13 @@ public class AppointmentApi {
     public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         final Appointment appointment = appointmentService.create(appointmentDTO);
         return new ResponseEntity<>(appointment, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/appointments/{id}/schedule")
+    public ResponseEntity<Appointment> schedule(@PathVariable long id, @AuthenticationPrincipal Principal principal) {
+        final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(appointmentService.schedule(appointment, user), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -72,19 +95,29 @@ public class AppointmentApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
     @GetMapping(path = "/appointment/{id}")
     public ResponseEntity<Appointment> getAppointment(@PathVariable long id) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(appointment, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
-    @PostMapping(path = "/appointment-report")
-    public ResponseEntity<AppointmentReport> createAppointmentReport(@RequestBody AppointmentReportDto appointmentReportDto, @AuthenticationPrincipal Principal principal) {
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @PostMapping(path = "/appointments/{id}/appointment-report")
+    public ResponseEntity<AppointmentReport> createAppointmentReport(@RequestBody AppointmentReportDto appointmentReportDto, @PathVariable long id, @AuthenticationPrincipal Principal principal) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
         final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
-        return new ResponseEntity<>(appointmentReportService.create(appointmentReportDto, user), HttpStatus.CREATED);
+        return new ResponseEntity<>(appointmentReportService.create(appointmentReportDto, appointment), HttpStatus.CREATED);
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @PostMapping(path = "/appointments/{id}/medication")
+    public ResponseEntity<Medication> createMedication(@RequestBody Medication medication, @PathVariable long id, @AuthenticationPrincipal Principal principal) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(medicationService.create(medication, appointment), HttpStatus.CREATED);
+    }
+
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
     @PostMapping(path = "/appointments-date")
@@ -92,5 +125,53 @@ public class AppointmentApi {
         final Hospital hospital = hospitalService.get(appointmentDateDto.getDoctorId()).orElseThrow(NotFoundException::new);
         final List<Appointment> appointments = appointmentService.getScheduledAndNotFinishedAppointmentsBasedOnDate(hospital, appointmentDateDto.getDateAndTime());
         return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PostMapping(path = "/appointments/{id}/operation-room-booking")
+    public ResponseEntity<OperationRoomBooking> createBooking(@PathVariable long id, @RequestBody OperationBookingDto dto) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        final OperationRoomBooking operationRoomBooking = operationRoomBookingService.create(appointment, dto);
+
+        roomService.removeCapacity(dto.getRoom());
+        return new ResponseEntity<>(operationRoomBooking, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @GetMapping(path = "/appointments/room/{id}/operation-room-booking")
+    public ResponseEntity<List<OperationRoomBooking>> getBooking(@PathVariable long id) {
+        final Room room = roomService.get(id).orElseThrow(NotFoundException::new);
+        final List<OperationRoomBooking> operationRoomBooking = operationRoomBookingService.findByRoom(room);
+
+        return new ResponseEntity<>(operationRoomBooking, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @GetMapping(value = "/appointments/{id}/appointment-report/download", produces = "application/octet-stream")
+    public ResponseEntity<ByteArrayResource> downloadAppointmentReport(@PathVariable long id) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        final AppointmentReport appointmentReport = appointmentReportService.findByAppointment(appointment).orElseThrow(NotFoundException::new);
+
+        final byte[] bytes = PdfReportGenerator.generatePdf(appointmentReport);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(bytes.length)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + appointmentReport.getAppointment().getDateAndTime() + ".pdf" + "\"")
+                .body(new ByteArrayResource(bytes));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @GetMapping(value = "/appointments/{id}/medication/download", produces = "application/octet-stream")
+    public ResponseEntity<ByteArrayResource> downloadPrescription(@PathVariable long id) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        final Medication medication = medicationService.findByAppointment(appointment).orElseThrow(NotFoundException::new);
+
+        final byte[] bytes = PrescriptionPdfReport.generatePdf(medication);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(bytes.length)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + medication.getAppointment().getDateAndTime() + ".pdf" + "\"")
+                .body(new ByteArrayResource(bytes));
     }
 }

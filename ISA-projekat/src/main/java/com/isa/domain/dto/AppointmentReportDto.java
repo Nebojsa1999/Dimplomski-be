@@ -1,203 +1,94 @@
 package com.isa.domain.dto;
 
+import com.isa.enums.BloodType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class AppointmentReportDto {
 
-    private String bloodType;
+    @Enumerated(EnumType.STRING)
+    private BloodType bloodType;
 
-    private String bloodAmount;
+    private String pastMedicalHistory;
 
-    private String noteToDoctor;
+    private String allergies;
 
-    private String copperSulfate;
+    private String familyHistory;
 
-    private String hemoglobinometer;
+    private String bloodPressure;
 
-    private String lungs;
+    private String hearthRate;
 
-    private String heart;
+    private String diagnosis;
 
-    private String ta;
-
-    private String tt;
-
-    private String tv;
-
-    private String bagType;
-
-    private String note;
-
-    private String punctureSite;
-
-    private String startOfGiving;
-
-    private String endOfGiving;
-
-    private String reasonForPrematureTerminationOfBloodDonation;
-
-    private Long equipmentId;
-
-    private String equipmentAmount;
-
-    private String denied;
-
-    private String reasonForDenying;
-    public String getEquipmentAmount() {
-        return equipmentAmount;
-    }
-
-    public void setEquipmentAmount(String equipmentAmount) {
-        this.equipmentAmount = equipmentAmount;
-    }
-
-    public String getBloodType() {
+    public BloodType getBloodType() {
         return bloodType;
     }
 
-    public void setBloodType(String bloodType) {
+    public void setBloodType(BloodType bloodType) {
         this.bloodType = bloodType;
     }
 
-    public String getBloodAmount() {
-        return bloodAmount;
+    public String getPastMedicalHistory() {
+        return pastMedicalHistory;
     }
 
-    public void setBloodAmount(String bloodAmount) {
-        this.bloodAmount = bloodAmount;
+    public void setPastMedicalHistory(String pastMedicalHistory) {
+        this.pastMedicalHistory = pastMedicalHistory;
     }
 
-    public String getNoteToDoctor() {
-        return noteToDoctor;
+    public String getAllergies() {
+        return allergies;
     }
 
-    public void setNoteToDoctor(String noteToDoctor) {
-        this.noteToDoctor = noteToDoctor;
+    public void setAllergies(String allergies) {
+        this.allergies = allergies;
     }
 
-    public String getCopperSulfate() {
-        return copperSulfate;
+    public String getFamilyHistory() {
+        return familyHistory;
     }
 
-    public void setCopperSulfate(String copperSulfate) {
-        this.copperSulfate = copperSulfate;
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
     }
 
-    public String getHemoglobinometer() {
-        return hemoglobinometer;
+    public String getBloodPressure() {
+        return bloodPressure;
     }
 
-    public void setHemoglobinometer(String hemoglobinometer) {
-        this.hemoglobinometer = hemoglobinometer;
+    public void setBloodPressure(String bloodPressure) {
+        this.bloodPressure = bloodPressure;
     }
 
-    public String getLungs() {
-        return lungs;
+    public String getHearthRate() {
+        return hearthRate;
     }
 
-    public void setLungs(String lungs) {
-        this.lungs = lungs;
+    public void setHearthRate(String hearthRate) {
+        this.hearthRate = hearthRate;
     }
 
-    public String getHeart() {
-        return heart;
+    public String getDiagnosis() {
+        return diagnosis;
     }
 
-    public void setHeart(String heart) {
-        this.heart = heart;
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
-    public String getTA() {
-        return ta;
-    }
-
-    public void setTA(String TA) {
-        this.ta = TA;
-    }
-
-    public String getTt() {
-        return tt;
-    }
-
-    public void setTt(String tt) {
-        this.tt = tt;
-    }
-
-    public String getTv() {
-        return tv;
-    }
-
-    public void setTv(String tv) {
-        this.tv = tv;
-    }
-
-    public String getBagType() {
-        return bagType;
-    }
-
-    public void setBagType(String bagType) {
-        this.bagType = bagType;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getPunctureSite() {
-        return punctureSite;
-    }
-
-    public void setPunctureSite(String punctureSite) {
-        this.punctureSite = punctureSite;
-    }
-
-    public String getStartOfGiving() {
-        return startOfGiving;
-    }
-
-    public void setStartOfGiving(String startOfGiving) {
-        this.startOfGiving = startOfGiving;
-    }
-
-    public String getEndOfGiving() {
-        return endOfGiving;
-    }
-
-    public void setEndOfGiving(String endOfGiving) {
-        this.endOfGiving = endOfGiving;
-    }
-
-    public String getReasonForPrematureTerminationOfBloodDonation() {
-        return reasonForPrematureTerminationOfBloodDonation;
-    }
-
-    public void setReasonForPrematureTerminationOfBloodDonation(String reasonForPrematureTerminationOfBloodDonation) {
-        this.reasonForPrematureTerminationOfBloodDonation = reasonForPrematureTerminationOfBloodDonation;
-    }
-
-    public Long getEquipmentId() {
-        return equipmentId;
-    }
-
-    public void setEquipmentId(Long equipmentId) {
-        this.equipmentId = equipmentId;
-    }
-
-    public String getDenied() {
-        return denied;
-    }
-
-    public void setDenied(String denied) {
-        this.denied = denied;
-    }
-
-    public String getReasonForDenying() {
-        return reasonForDenying;
-    }
-
-    public void setReasonForDenying(String reasonForDenying) {
-        this.reasonForDenying = reasonForDenying;
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("bloodType", bloodType)
+                .append("pastMedicalHistory", pastMedicalHistory)
+                .append("allergies", allergies)
+                .append("familyHistory", familyHistory)
+                .append("bloodPressure", bloodPressure)
+                .append("hearthRate", hearthRate)
+                .append("diagnosis", diagnosis)
+                .toString();
     }
 }

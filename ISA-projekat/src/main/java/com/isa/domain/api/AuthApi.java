@@ -35,11 +35,7 @@ public class AuthApi {
     @PostMapping(path = "/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
 
-        final User user = customUserService.findUserByEmail(loginDTO.getUsername()).orElseThrow(NotFoundException::new);
-
-        if (user == null) {
-            throw new UnauthorizedException("No user found with email: " + loginDTO.getUsername());
-        }
+        final User user = customUserService.findUserByEmail(loginDTO.getUsername()).orElseThrow(()-> new UnauthorizedException("No user found with email: " + loginDTO.getUsername()));
 
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid password for user: " + loginDTO.getUsername());

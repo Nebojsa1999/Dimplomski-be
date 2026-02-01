@@ -13,11 +13,12 @@ import org.springframework.web.context.request.WebRequest;
 public class ExceptionResolver {
 
     public static final Logger LOG = LoggerFactory.getLogger(ExceptionResolver.class);
+    private static final String VALIDATION_ERROR = "VALIDATION_ERROR";
 
     @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<?> illegalArgument(IllegalArgumentException exception, WebRequest request) {
+    protected ResponseEntity<ExceptionDto> illegalArgument(IllegalArgumentException exception) {
         LOG.error("Illegal argument", exception);
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ExceptionDto(VALIDATION_ERROR, exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
