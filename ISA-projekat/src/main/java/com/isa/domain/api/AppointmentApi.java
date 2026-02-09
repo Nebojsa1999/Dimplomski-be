@@ -4,6 +4,7 @@ import com.isa.config.Principal;
 import com.isa.domain.dto.*;
 import com.isa.domain.model.*;
 import com.isa.enums.AppointmentStatus;
+import com.isa.enums.DoctorType;
 import com.isa.exception.NotFoundException;
 import com.isa.service.*;
 import com.isa.util.PdfReportGenerator;
@@ -33,9 +34,10 @@ public class AppointmentApi {
     private final MedicationService medicationService;
     private final OperationRoomBookingService operationRoomBookingService;
     private final RoomService roomService;
+    private final FeedbackService feedbackService;
 
     @Autowired
-    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService, MedicationService medicationService, OperationRoomBookingService operationRoomBookingService, RoomService roomService) {
+    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService, MedicationService medicationService, OperationRoomBookingService operationRoomBookingService, RoomService roomService, FeedbackService feedbackService, FeedbackService feedbackService1) {
         this.appointmentService = appointmentService;
         this.appointmentReportService = appointmentReportService;
         this.hospitalService = hospitalService;
@@ -43,6 +45,7 @@ public class AppointmentApi {
         this.medicationService = medicationService;
         this.operationRoomBookingService = operationRoomBookingService;
         this.roomService = roomService;
+        this.feedbackService = feedbackService1;
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -53,9 +56,9 @@ public class AppointmentApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping(path = "/{id}/appointments")
-    public ResponseEntity<List<Appointment>> listByHospitalId(@PathVariable long id, @RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
+    public ResponseEntity<List<Appointment>> listByHospitalId(@PathVariable long id, @RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to, @RequestParam(required = false) DoctorType doctorType) {
         final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
-        return new ResponseEntity<>(appointmentService.listByHospital(appointmentStatus,  from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null, hospital), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.listByHospital(appointmentStatus, from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null, hospital, doctorType), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -145,6 +148,24 @@ public class AppointmentApi {
         final List<OperationRoomBooking> operationRoomBooking = operationRoomBookingService.findByRoom(room);
 
         return new ResponseEntity<>(operationRoomBooking, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'PATIENT')")
+    @PostMapping(path = "/appointments/{appointmentId}/feedback")
+    public ResponseEntity<Feedback> createFeedback(@PathVariable long appointmentId, @RequestBody FeedbackDto feedbackDto) {
+        final Appointment appointment = appointmentService.get(appointmentId).orElseThrow(NotFoundException::new);
+        final Feedback feedback = feedbackService.create(appointment, feedbackDto);
+
+        return new ResponseEntity<>(feedback, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'PATIENT')")
+    @GetMapping(path = "/appointments/{appointmentId}/feedback")
+    public ResponseEntity<Feedback> getFeedback(@PathVariable long appointmentId) {
+        final Appointment appointment = appointmentService.get(appointmentId).orElseThrow(NotFoundException::new);
+        final Feedback feedback = feedbackService.findByAppointment(appointment).orElseThrow(NotFoundException::new);
+
+        return new ResponseEntity<>(feedback, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")

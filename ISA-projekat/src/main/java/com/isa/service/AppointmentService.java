@@ -5,6 +5,7 @@ import com.isa.domain.model.Appointment;
 import com.isa.domain.model.Hospital;
 import com.isa.domain.model.User;
 import com.isa.enums.AppointmentStatus;
+import com.isa.enums.DoctorType;
 import com.isa.enums.Role;
 import com.isa.exception.NotFoundException;
 import com.isa.repository.AppointmentRepository;
@@ -52,8 +53,8 @@ public class AppointmentService {
         return appointmentRepository.findAll(appointmentStatus, from, to);
     }
 
-    public List<Appointment> listByHospital(AppointmentStatus appointmentStatus, Instant from, Instant to, Hospital hospital) {
-        return appointmentRepository.findAllByHospitalId(appointmentStatus, from, to, hospital.getId());
+    public List<Appointment> listByHospital(AppointmentStatus appointmentStatus, Instant from, Instant to, Hospital hospital, DoctorType doctorType) {
+        return appointmentRepository.findAllByHospitalId(appointmentStatus, from, to, hospital.getId(),doctorType);
     }
 
     public Appointment schedule(Appointment appointment, User patient) {

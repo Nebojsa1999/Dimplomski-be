@@ -1,7 +1,9 @@
 package com.isa.domain.dto;
 
+import com.isa.enums.DoctorType;
 import com.isa.enums.Role;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UserDTO {
 
@@ -22,6 +24,7 @@ public class UserDTO {
     private String occupationInfo;
     private Role role;
     private Long hospitalId;
+    private DoctorType doctorType;
 
     public String getEmail() {
         return email;
@@ -159,9 +162,17 @@ public class UserDTO {
         this.hospitalId = hospitalId;
     }
 
+    public DoctorType getDoctorType() {
+        return doctorType;
+    }
+
+    public void setDoctorType(DoctorType doctorType) {
+        this.doctorType = doctorType;
+    }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("email", email)
                 .append("password", password)
                 .append("firstName", firstName)
@@ -178,6 +189,8 @@ public class UserDTO {
                 .append("occupation", occupation)
                 .append("occupationInfo", occupationInfo)
                 .append("role", role)
+                .append("hospitalId", hospitalId)
+                .append("doctorType", doctorType)
                 .toString();
     }
 }

@@ -59,6 +59,10 @@ public class UserService {
         user.setOccupation(userDTO.getOccupation());
         user.setPersonalId(userDTO.getPersonalId());
 
+        if (userDTO.getDoctorType() != null){
+            user.setDoctorType(userDTO.getDoctorType());
+        }
+
         user.setHospital(hospitalRepository.findById(userDTO.getHospitalId()).orElseThrow());
 
         return userRepository.save(user);

@@ -143,4 +143,11 @@
             <column name="hospital_id"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="007-user-doctor-type" author="nebojsa" context="development,production">
+    <addColumn tableName="user">
+        <column name="doctor_type" type="VARCHAR(255)">
+        </column>
+    </addColumn>
+    </changeSet>
 </databaseChangeLog>

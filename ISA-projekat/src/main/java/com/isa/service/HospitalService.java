@@ -2,7 +2,6 @@ package com.isa.service;
 
 
 import com.isa.domain.dto.HospitalDto;
-import com.isa.domain.model.Appointment;
 import com.isa.domain.model.Hospital;
 import com.isa.domain.model.Feedback;
 import com.isa.repository.HospitalRepository;
@@ -60,8 +59,8 @@ public class HospitalService {
         return hospitalRepository.save(hospital);
     }
 
-    public Double getAverageRating(Appointment appointment) {
-        final List<Feedback> allByHospital = feedbackService.findAllByAppointment(appointment);
+    public Double getAverageRating(Hospital hospital) {
+        final List<Feedback> allByHospital = feedbackService.findAllByHospital(hospital);
         return allByHospital.stream()
                 .mapToDouble(Feedback::getGrade)
                 .average()

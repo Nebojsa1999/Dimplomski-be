@@ -71,10 +71,10 @@ CREATE TABLE `feedback`
     `grade`     bigint(20),
     `comment`   varchar(255),
     `user_id`   bigint(20),
-    hospital_id bigint(20),
+    appointment_id bigint(20),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES user (id),
-    FOREIGN KEY (hospital_id) REFERENCES hospital (id)
+    FOREIGN KEY (appointment_id) REFERENCES appointment (id)
 );
 
 DROP TABLE IF EXISTS `equipment`;

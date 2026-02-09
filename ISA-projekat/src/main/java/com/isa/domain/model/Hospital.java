@@ -7,7 +7,7 @@ import java.time.LocalTime;
 public class Hospital extends AbstractEntity {
     private String name;
     private String description;
-    private double averageRating;
+    private Double averageRating;
     private String address;
     private String city;
     private String country;
@@ -34,11 +34,11 @@ public class Hospital extends AbstractEntity {
         this.description = description;
     }
 
-    public double getAverageRating() {
+    public Double getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(double averageRating) {
+    public void setAverageRating(Double averageRating) {
         this.averageRating = averageRating;
     }
 

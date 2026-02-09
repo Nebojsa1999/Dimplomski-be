@@ -54,13 +54,18 @@ public class HospitalApi {
     @GetMapping("/{id}")
     public ResponseEntity<Hospital> get(@PathVariable Long id, @AuthenticationPrincipal Principal principal) {
         final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
+        hospital.setAverageRating(hospitalService.getAverageRating(hospital));
         return new ResponseEntity<>(hospital, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
     @GetMapping
     public ResponseEntity<List<Hospital>> list(@RequestParam(required = false) String name) {
-        final List<Hospital> list = hospitalService.list(name);
+        final List<Hospital> list = hospitalService.list(name).stream()
+                .peek(hospital-> {
+                    final Double averageRating = hospitalService.getAverageRating(hospital);
+                    hospital.setAverageRating(averageRating);
+                }).toList();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

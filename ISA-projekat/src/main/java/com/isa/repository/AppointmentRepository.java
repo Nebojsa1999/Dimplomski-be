@@ -3,6 +3,7 @@ package com.isa.repository;
 import com.isa.domain.model.Appointment;
 import com.isa.domain.model.User;
 import com.isa.enums.AppointmentStatus;
+import com.isa.enums.DoctorType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,14 +19,19 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findAllByHospitalId(Long id);
 
-    @Query("SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus) AND appointment.hospital.id =:hospital" +
-            " AND (:from IS NULL OR appointment.dateAndTime >= :from)\n" +
-            "      AND (:to IS NULL OR appointment.dateAndTime <= :to)\n")
-    List<Appointment> findAllByHospitalId(@Param("appointmentStatus") AppointmentStatus appointmentStatus, @Param("from") Instant from, @Param("to") Instant to, @Param("hospital") Long hospital);
+    @Query("""
+            SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus) AND appointment.hospital.id =:hospital
+             AND (:doctorType IS NULL OR appointment.doctor.doctorType = :doctorType)
+             AND (:from IS NULL OR appointment.dateAndTime >= :from)
+                  AND (:to IS NULL OR appointment.dateAndTime <= :to)
+            """)
+    List<Appointment> findAllByHospitalId(@Param("appointmentStatus") AppointmentStatus appointmentStatus, @Param("from") Instant from, @Param("to") Instant to, @Param("hospital") Long hospital, @Param("doctorType") DoctorType doctorType);
 
-    @Query("SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus)" +
-            " AND (:from IS NULL OR appointment.dateAndTime >= :from)\n" +
-            "      AND (:to IS NULL OR appointment.dateAndTime <= :to)\n")
+    @Query("""
+            SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus)
+             AND (:from IS NULL OR appointment.dateAndTime >= :from)
+                  AND (:to IS NULL OR appointment.dateAndTime <= :to)
+            """)
     List<Appointment> findAll(@Param("appointmentStatus") AppointmentStatus appointmentStatus, @Param("from") Instant from, @Param("to") Instant to);
 
     @Query("SELECT appointment FROM Appointment appointment WHERE appointment.dateAndTime < :timestamp and appointment.appointmentStatus = :status")

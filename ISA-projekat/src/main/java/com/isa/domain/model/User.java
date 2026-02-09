@@ -1,11 +1,13 @@
 package com.isa.domain.model;
 
+import com.isa.enums.DoctorType;
 import com.isa.enums.Gender;
 import com.isa.enums.Role;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 
 /**
@@ -62,6 +64,9 @@ public class User extends AbstractEntity {
     private Hospital hospital;
 
     private double points;
+
+    @Enumerated(EnumType.STRING)
+    private DoctorType doctorType;
 
     public String getPassword() {
         return password;
@@ -207,8 +212,36 @@ public class User extends AbstractEntity {
         this.points = points;
     }
 
+    public DoctorType getDoctorType() {
+        return doctorType;
+    }
+
+    public void setDoctorType(DoctorType doctorType) {
+        this.doctorType = doctorType;
+    }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("password", password).append("email", email).append("firstName", firstName).append("lastName", lastName).append("address", address).append("city", city).append("country", country).append("latitude", latitude).append("longitude", longitude).append("phone", phone).append("firstLogin", firstLogin).append("role", role).append("personalId", personalId).append("gender", gender).append("occupation", occupation).append("occupationInfo", occupationInfo).append("hospital", hospital).append("points", points).toString();
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("password", password)
+                .append("email", email)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("address", address)
+                .append("city", city)
+                .append("country", country)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .append("phone", phone)
+                .append("firstLogin", firstLogin)
+                .append("role", role)
+                .append("personalId", personalId)
+                .append("gender", gender)
+                .append("occupation", occupation)
+                .append("occupationInfo", occupationInfo)
+                .append("hospital", hospital)
+                .append("points", points)
+                .append("doctorType", doctorType)
+                .toString();
     }
 }
