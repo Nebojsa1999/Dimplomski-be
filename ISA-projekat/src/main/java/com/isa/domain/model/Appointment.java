@@ -10,10 +10,6 @@ import java.time.Instant;
 @Entity
 public class Appointment extends AbstractEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital; //hospital has more appointments manyToOne
-
     private Instant dateAndTime;
 
     private int duration;
@@ -28,14 +24,6 @@ public class Appointment extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
-
-    public Hospital getHospital() {
-        return hospital;
-    }
-
-    public void setHospital(Hospital hospital) {
-        this.hospital = hospital;
-    }
 
     public Instant getDateAndTime() {
         return dateAndTime;
@@ -80,7 +68,6 @@ public class Appointment extends AbstractEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("hospital", hospital)
                 .append("dateAndTime", dateAndTime)
                 .append("duration", duration)
                 .append("doctor", doctor)

@@ -2,36 +2,18 @@ package com.isa.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class Feedback extends AbstractEntity {
+public class LabDocument extends AbstractEntity{
 
-    private double grade;
-
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    private String comment;
-
-    public double getGrade() {
-        return grade;
-    }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+    private String filePath;
 
     public Appointment getAppointment() {
         return appointment;
@@ -41,12 +23,19 @@ public class Feedback extends AbstractEntity {
         this.appointment = appointment;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("grade", grade)
                 .append("appointment", appointment)
-                .append("comment", comment)
+                .append("filePath", filePath)
                 .toString();
     }
 }

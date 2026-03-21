@@ -4,7 +4,6 @@ import com.isa.config.Principal;
 import com.isa.domain.dto.*;
 import com.isa.domain.model.*;
 import com.isa.enums.AppointmentStatus;
-import com.isa.enums.DoctorType;
 import com.isa.exception.NotFoundException;
 import com.isa.service.*;
 import com.isa.util.PdfReportGenerator;
@@ -56,9 +55,9 @@ public class AppointmentApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping(path = "/{id}/appointments")
-    public ResponseEntity<List<Appointment>> listByHospitalId(@PathVariable long id, @RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to, @RequestParam(required = false) DoctorType doctorType) {
+    public ResponseEntity<List<Appointment>> listByHospitalId(@PathVariable long id, @RequestParam(required = false) AppointmentStatus appointmentStatus, @RequestParam(required = false) Long from, @RequestParam(required = false) Long to) {
         final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
-        return new ResponseEntity<>(appointmentService.listByHospital(appointmentStatus, from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null, hospital, doctorType), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.listByHospital(appointmentStatus, from != null ? Instant.ofEpochMilli(from) : null, to != null ? Instant.ofEpochMilli(to) : null, hospital), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")

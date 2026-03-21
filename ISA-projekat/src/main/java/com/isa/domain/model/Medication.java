@@ -12,12 +12,8 @@ import java.time.Instant;
 @Entity
 public class Medication extends AbstractEntity {
 
-    private String name;
-    private String dosage;
     private String frequency;
-    private String instructions;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
@@ -25,21 +21,9 @@ public class Medication extends AbstractEntity {
 
     private String notes;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDosage() {
-        return dosage;
-    }
-
-    public void setDosage(String dosage) {
-        this.dosage = dosage;
-    }
+    @ManyToOne
+    @JoinColumn(name = "medicament_id")
+    private Medicament medicament;
 
     public String getFrequency() {
         return frequency;
@@ -47,14 +31,6 @@ public class Medication extends AbstractEntity {
 
     public void setFrequency(String frequency) {
         this.frequency = frequency;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
     }
 
     public Appointment getAppointment() {
@@ -81,13 +57,18 @@ public class Medication extends AbstractEntity {
         this.notes = notes;
     }
 
+    public Medicament getMedicament() {
+        return medicament;
+    }
+
+    public void setMedicament(Medicament medicament) {
+        this.medicament = medicament;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("name", name)
-                .append("dosage", dosage)
                 .append("frequency", frequency)
-                .append("instructions", instructions)
                 .append("issuedAt", issuedAt)
                 .append("notes", notes)
                 .toString();

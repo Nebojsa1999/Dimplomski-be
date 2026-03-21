@@ -35,7 +35,6 @@ public class FeedbackService {
         final Feedback feedback = new Feedback();
         feedback.setComment(feedbackDto.getComment());
         feedback.setGrade(feedbackDto.getGrade());
-        feedback.setPatient(appointment.getPatient());
         feedback.setAppointment(appointment);
         feedbackRepository.save(feedback);
 

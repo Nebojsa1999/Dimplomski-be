@@ -24,7 +24,7 @@ public class AppointmentReport extends AbstractEntity{
 
     private String diagnosis;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 

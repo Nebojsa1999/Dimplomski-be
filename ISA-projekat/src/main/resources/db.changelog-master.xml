@@ -145,9 +145,255 @@
     </changeSet>
 
     <changeSet id="007-user-doctor-type" author="nebojsa" context="development,production">
-    <addColumn tableName="user">
-        <column name="doctor_type" type="VARCHAR(255)">
-        </column>
-    </addColumn>
+        <addColumn tableName="user">
+            <column name="doctor_type" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="008-new-entities" author="nebojsa" context="development,production">
+        <createTable tableName="department">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)"/>
+            <column name="phone_number" type="VARCHAR(255)"/>
+            <column name="hospital_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="department"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_hospital"/>
+
+        <createTable tableName="department_procedure">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)"/>
+            <column name="price" type="BIGINT(200)"/>
+            <column name="department_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="department_procedure"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department"/>
+
+        <createTable tableName="diagnosis">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)"/>
+            <column name="department_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="diagnosis"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department"/>
+
+        <createTable tableName="medicament">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instructions" type="VARCHAR(1000)"/>
+            <column name="dosage" type="VARCHAR(255)"/>
+            <column name="department_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="medicament"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department"/>
+
+        <createTable tableName="doctor_schedule">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="day_of_week" type="VARCHAR(255)"/>
+            <column name="start_date" type="timestamp"/>
+            <column name="start_time" type="time"/>
+            <column name="end_time" type="time"/>
+            <column name="duration_of_appointment_min" type="bigint"/>
+            <column name="break_start_time" type="time"/>
+            <column name="break_end_time" type="time"/>
+            <column name="doctor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="doctor_schedule"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_doctor"/>
+
+        <createTable tableName="favorite_doctor">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="doctor_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="favorite_doctor"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_doctor"/>
+        <addForeignKeyConstraint
+                baseTableName="favorite_doctor"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_patient"/>
+
+        <createTable tableName="lab_document">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="appointment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_path" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="lab_document"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
+                referencedColumnNames="id"
+                constraintName="fk_appointment"/>
+
+        <createTable tableName="patient_medical_record">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="patient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="blood_type" type="VARCHAR(255)"/>
+            <column name="rh_factor" type="VARCHAR(255)"/>
+            <column name="height_cm" type="BIGINT"/>
+            <column name="weight_kg" type="BIGINT"/>
+            <column name="chronic_diseases" type="VARCHAR(1000)"/>
+            <column name="previous_hospitalization" type="VARCHAR(1000)"/>
+            <column name="previous_surgeries" type="VARCHAR(1000)"/>
+            <column name="family_history" type="VARCHAR(1000)"/>
+            <column name="allergies" type="VARCHAR(1000)"/>
+            <column name="long_therm_therapy" type="VARCHAR(1000)"/>
+            <column name="specific_contradictions" type="VARCHAR(1000)"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="patient_medical_record"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_patient"/>
+
+        <addColumn tableName="equipment">
+            <column name="room_id" type="BIGINT">
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint
+                baseTableName="equipment"
+                baseColumnNames="room_id"
+                referencedTableName="room"
+                referencedColumnNames="id"
+                constraintName="fk_room"/>
+        <dropForeignKeyConstraint baseTableName="equipment" constraintName="fk_equipment_hospital"/>
+        <dropColumn tableName="equipment" columnName="hospital_id"/>
+
+        <dropForeignKeyConstraint baseTableName="feedback" constraintName="feedback_ibfk_1"/>
+        <dropColumn tableName="feedback" columnName="user_id"/>
+
+        <dropColumn tableName="user" columnName="doctor_type"/>
+        <addColumn tableName="user">
+            <column name="department_id" type="BIGINT">
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department"/>
+    </changeSet>
+
+    <changeSet id="009-changes" author="nebojsa">
+        <addColumn tableName="medication">
+            <column name="medicament_id" type="BIGINT"/>
+        </addColumn>
+
+        <!-- Add foreign key constraint -->
+        <addForeignKeyConstraint
+                baseTableName="medication"
+                baseColumnNames="medicament_id"
+                referencedTableName="medicament"
+                referencedColumnNames="id"
+                constraintName="fk_medication_medicament"/>
+
+        <dropColumn tableName="medication" columnName="name"/>
+        <dropColumn tableName="medication" columnName="dosage"/>
+        <dropColumn tableName="medication" columnName="instructions"/>
+    </changeSet>
+
+    <changeSet id="010-verification-token" author="nebojsa">
+        <createTable tableName="verification_token">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="expiry_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="verification_token"
+                baseColumnNames="user_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_verificationtoken_user"
+                onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

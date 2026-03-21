@@ -15,7 +15,6 @@ public class AppointmentReportService {
 
     private final AppointmentReportRepository appointmentReportRepository;
 
-
     @Autowired
     public AppointmentReportService(AppointmentReportRepository appointmentReportRepository) {
         this.appointmentReportRepository = appointmentReportRepository;

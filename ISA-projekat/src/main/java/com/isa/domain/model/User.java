@@ -1,12 +1,10 @@
 package com.isa.domain.model;
 
-import com.isa.enums.DoctorType;
 import com.isa.enums.Gender;
 import com.isa.enums.Role;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 
@@ -38,15 +36,8 @@ public class User extends AbstractEntity {
     @NotNull
     private String country;
 
-    private double latitude;
-
-    private double longitude;
-
     @NotNull
     private String phone;
-
-    @NotNull
-    private boolean firstLogin;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -63,10 +54,11 @@ public class User extends AbstractEntity {
     @ManyToOne
     private Hospital hospital;
 
-    private double points;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
-    @Enumerated(EnumType.STRING)
-    private DoctorType doctorType;
+    private Boolean verified;
 
     public String getPassword() {
         return password;
@@ -124,36 +116,12 @@ public class User extends AbstractEntity {
         this.country = country;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public boolean isFirstLogin() {
-        return firstLogin;
-    }
-
-    public void setFirstLogin(boolean firstLogin) {
-        this.firstLogin = firstLogin;
     }
 
     public Role getRole() {
@@ -204,20 +172,20 @@ public class User extends AbstractEntity {
         this.hospital = hospital;
     }
 
-    public double getPoints() {
-        return points;
+    public Boolean getVerified() {
+        return verified;
     }
 
-    public void setPoints(double points) {
-        this.points = points;
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
-    public DoctorType getDoctorType() {
-        return doctorType;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDoctorType(DoctorType doctorType) {
-        this.doctorType = doctorType;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     @Override
@@ -230,18 +198,15 @@ public class User extends AbstractEntity {
                 .append("address", address)
                 .append("city", city)
                 .append("country", country)
-                .append("latitude", latitude)
-                .append("longitude", longitude)
                 .append("phone", phone)
-                .append("firstLogin", firstLogin)
                 .append("role", role)
                 .append("personalId", personalId)
                 .append("gender", gender)
                 .append("occupation", occupation)
                 .append("occupationInfo", occupationInfo)
                 .append("hospital", hospital)
-                .append("points", points)
-                .append("doctorType", doctorType)
+                .append("verified", verified)
+                .append("department", department)
                 .toString();
     }
 }

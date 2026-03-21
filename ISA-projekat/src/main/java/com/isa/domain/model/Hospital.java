@@ -1,19 +1,21 @@
 package com.isa.domain.model;
 
 import jakarta.persistence.Entity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.time.LocalTime;
 
 @Entity
 public class Hospital extends AbstractEntity {
+
     private String name;
     private String description;
     private Double averageRating;
     private String address;
     private String city;
     private String country;
-
     private double latitude;
-
     private double longitude;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -97,5 +99,21 @@ public class Hospital extends AbstractEntity {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("name", name)
+                .append("description", description)
+                .append("averageRating", averageRating)
+                .append("address", address)
+                .append("city", city)
+                .append("country", country)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .append("startTime", startTime)
+                .append("endTime", endTime)
+                .toString();
     }
 }

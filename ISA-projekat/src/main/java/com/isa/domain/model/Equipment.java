@@ -3,6 +3,8 @@ package com.isa.domain.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 public class Equipment extends AbstractEntity {
@@ -11,13 +13,9 @@ public class Equipment extends AbstractEntity {
 
     private double amount;
 
-    @ManyToOne()
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
-
-    public Hospital getHospital() {
-        return hospital;
-    }
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     public String getName() {
         return name;
@@ -33,5 +31,22 @@ public class Equipment extends AbstractEntity {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("name", name)
+                .append("amount", amount)
+                .append("room", room)
+                .toString();
     }
 }
