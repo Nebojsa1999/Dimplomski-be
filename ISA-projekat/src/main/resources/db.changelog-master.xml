@@ -190,7 +190,7 @@
                 baseColumnNames="department_id"
                 referencedTableName="department"
                 referencedColumnNames="id"
-                constraintName="fk_department"/>
+                constraintName="fk_department_procedure"/>
 
         <createTable tableName="diagnosis">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -212,7 +212,7 @@
                 baseColumnNames="department_id"
                 referencedTableName="department"
                 referencedColumnNames="id"
-                constraintName="fk_department"/>
+                constraintName="fk_department_diagonosis"/>
 
         <createTable tableName="medicament">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -232,7 +232,7 @@
                 baseColumnNames="department_id"
                 referencedTableName="department"
                 referencedColumnNames="id"
-                constraintName="fk_department"/>
+                constraintName="fk_department_medicament"/>
 
         <createTable tableName="doctor_schedule">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -254,7 +254,7 @@
                 baseColumnNames="doctor_id"
                 referencedTableName="user"
                 referencedColumnNames="id"
-                constraintName="fk_doctor"/>
+                constraintName="fk_doctor_schedule"/>
 
         <createTable tableName="favorite_doctor">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -272,13 +272,13 @@
                 baseColumnNames="doctor_id"
                 referencedTableName="user"
                 referencedColumnNames="id"
-                constraintName="fk_doctor"/>
+                constraintName="fk_doctor_favorite"/>
         <addForeignKeyConstraint
                 baseTableName="favorite_doctor"
                 baseColumnNames="patient_id"
                 referencedTableName="user"
                 referencedColumnNames="id"
-                constraintName="fk_patient"/>
+                constraintName="fk_patient_favorite"/>
 
         <createTable tableName="lab_document">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -294,7 +294,7 @@
                 baseColumnNames="appointment_id"
                 referencedTableName="appointment"
                 referencedColumnNames="id"
-                constraintName="fk_appointment"/>
+                constraintName="fk_appointment_document"/>
 
         <createTable tableName="patient_medical_record">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -320,7 +320,7 @@
                 baseColumnNames="patient_id"
                 referencedTableName="user"
                 referencedColumnNames="id"
-                constraintName="fk_patient"/>
+                constraintName="fk_patient_medical_record"/>
 
         <addColumn tableName="equipment">
             <column name="room_id" type="BIGINT">
@@ -348,7 +348,7 @@
                 baseColumnNames="department_id"
                 referencedTableName="department"
                 referencedColumnNames="id"
-                constraintName="fk_department"/>
+                constraintName="fk_department_user"/>
     </changeSet>
 
     <changeSet id="009-changes" author="nebojsa">

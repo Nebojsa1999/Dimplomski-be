@@ -27,7 +27,7 @@ public class FeedbackService {
     }
 
     public List<Feedback> findAllByHospital(Hospital hospital) {
-        return feedbackRepository.findAllByAppointment_Hospital(hospital);
+        return feedbackRepository.findAllByAppointmentDoctorHospital(hospital);
     }
 
     @Transactional

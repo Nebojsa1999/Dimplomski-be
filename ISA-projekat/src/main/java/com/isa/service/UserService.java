@@ -45,14 +45,9 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(userDTO.getRole());
-        final double latitude = userDTO.getLatitude() == null ? 0 : Double.parseDouble(userDTO.getLatitude());
-        final double longitude = userDTO.getLongitude() == null ? 0 : Double.parseDouble(userDTO.getLongitude());
-        user.setLatitude(latitude);
-        user.setLongitude(longitude);
         user.setAddress(userDTO.getAddress());
         user.setCity(userDTO.getCity());
         user.setCountry(userDTO.getCountry());
-        user.setFirstLogin(true);
         user.setPhone(userDTO.getPhone());
         user.setGender(Gender.valueOf(userDTO.getGender()));
         user.setOccupationInfo(userDTO.getOccupationInfo());
@@ -86,7 +81,6 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
-        user.setFirstLogin(false);
 
         return userRepository.save(user);
     }
@@ -96,12 +90,7 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setAddress(userDTO.getAddress());
         user.setCity(userDTO.getCity());
-        final double longitude = userDTO.getLongitude() == null ? 0 : Double.parseDouble(userDTO.getLongitude());
         user.setCountry(userDTO.getCountry());
-        final double latitude = userDTO.getLatitude() == null ? 0 : Double.parseDouble(userDTO.getLatitude());
-        user.setLatitude(latitude);
-        user.setLongitude(longitude);
-        user.setFirstLogin(true);
         user.setPhone(userDTO.getPhone());
         user.setOccupationInfo(userDTO.getOccupationInfo());
         user.setOccupation(userDTO.getOccupation());

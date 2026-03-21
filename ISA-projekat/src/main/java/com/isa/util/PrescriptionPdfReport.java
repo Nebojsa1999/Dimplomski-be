@@ -46,10 +46,10 @@ public class PrescriptionPdfReport {
             float currentY = yStart;
             currentY = writeLine(content, xLabel, xValue, currentY, "Doctor:", medication.getAppointment().getDoctor().getFirstName() + " " + medication.getAppointment().getDoctor().getLastName());
             currentY = writeLine(content, xLabel, xValue, currentY, "Appointment Date:", formattedDate);
-            currentY = writeLine(content, xLabel, xValue, currentY, "Name:", medication.getName());
-            currentY = writeLine(content, xLabel, xValue, currentY, "Dosage:", medication.getDosage());
+            currentY = writeLine(content, xLabel, xValue, currentY, "Name:", medication.getMedicament().getName());
+            currentY = writeLine(content, xLabel, xValue, currentY, "Dosage:", medication.getMedicament().getDosage());
             currentY = writeLine(content, xLabel, xValue, currentY, "Frequency:", medication.getFrequency());
-            currentY = writeLine(content, xLabel, xValue, currentY, "Instructions:", medication.getInstructions());
+            currentY = writeLine(content, xLabel, xValue, currentY, "Instructions:", medication.getMedicament().getInstructions());
             currentY = writeWrappedLabelValue(content, xLabel, xValue, currentY,
                     "Notes:", medication.getNotes(),
                     PDType1Font.HELVETICA_BOLD, PDType1Font.HELVETICA, 12,

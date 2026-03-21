@@ -14,5 +14,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     Optional<Feedback> findByAppointmentId(long appointmentId);
 
-    List<Feedback> findAllByAppointment_Hospital(Hospital appointmentHospital);
+    List<Feedback> findAllByAppointmentDoctorHospital(Hospital appointmentHospital);
 }

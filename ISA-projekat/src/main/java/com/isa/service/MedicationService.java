@@ -40,8 +40,8 @@ public class MedicationService {
     }
 
     public void update(Medication medication, Medication medicationDto) {
-        medication.setName(medicationDto.getName());
-        medication.setDosage(medicationDto.getDosage());
+        medication.getMedicament().setName(medicationDto.getMedicament().getName());
+        medication.getMedicament().setDosage(medicationDto.getMedicament().getDosage());
         medication.setFrequency(medicationDto.getFrequency());
         medicationRepository.save(medication);
     }

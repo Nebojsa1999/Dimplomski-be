@@ -16,10 +16,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findAllByPatientId(Long id);
 
-    List<Appointment> findAllByHospitalId(Long id);
+    List<Appointment> findAllByDoctorHospitalId(Long id);
 
     @Query("""
-            SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus) AND appointment.hospital.id =:hospital
+            SELECT appointment FROM Appointment appointment WHERE (:appointmentStatus is NULL OR appointment.appointmentStatus = :appointmentStatus) AND appointment.doctor.hospital.id =:hospital
              AND (:from IS NULL OR appointment.dateAndTime >= :from)
                   AND (:to IS NULL OR appointment.dateAndTime <= :to)
             """)

@@ -54,6 +54,8 @@ public class User extends AbstractEntity {
     @ManyToOne
     private Hospital hospital;
 
+    private double points;
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
@@ -186,6 +188,14 @@ public class User extends AbstractEntity {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public double getPoints() {
+        return points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
     }
 
     @Override

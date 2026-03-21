@@ -1,13 +1,13 @@
 package com.isa.domain.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.stereotype.Service;
 
-@Service
-public class DepartmentProcedure extends AbstractEntity{
+@Entity
+public class DepartmentProcedure extends AbstractEntity {
 
     private String name;
     private String description;

@@ -66,13 +66,13 @@ public class AppointmentService {
     }
 
     public List<Appointment> getFreeAppointments(Hospital hospital) {
-        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
+        return appointmentRepository.findAllByDoctorHospitalId(hospital.getId()).stream()
                 .filter(appointment -> appointment.getPatient() == null && appointment.getDateAndTime().isAfter(Instant.now()))
                 .toList();
     }
 
     public List<Appointment> getAppointmentsForHospital(Hospital hospital, AppointmentStatus appointmentStatus) {
-        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
+        return appointmentRepository.findAllByDoctorHospitalId(hospital.getId()).stream()
                 .filter(appointment -> appointment.getPatient() != null && appointmentStatus == appointment.getAppointmentStatus())
                 .toList();
     }
@@ -114,7 +114,7 @@ public class AppointmentService {
         final DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-M-d");
         final LocalDate ldt = LocalDate.parse(date, f);
 
-        return appointmentRepository.findAllByHospitalId(hospital.getId()).stream()
+        return appointmentRepository.findAllByDoctorHospitalId(hospital.getId()).stream()
                 .filter(appointment -> appointment.getPatient() != null && appointment.getAppointmentStatus() == AppointmentStatus.SCHEDULED
                         && appointment.getDateAndTime().atOffset(ZoneOffset.UTC).toLocalDate().equals(ldt))
                 .toList();
