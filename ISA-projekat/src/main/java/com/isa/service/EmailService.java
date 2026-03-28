@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async
     public void sendVerificationEmail(String toAddress, String token) {
         final SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromAddress);
@@ -29,6 +31,7 @@ public class EmailService {
         message.setSubject("Hospital System – Email Verification");
         message.setText(
                 "Thank you for registering.\n\n"
+                + "Your registered email: " + toAddress + "\n\n"
                 + "Please verify your email address by clicking the link below:\n\n"
                 + baseUrl + "/api/verify?token=" + token
                 + "\n\nThis link expires in 24 hours.\n\n"

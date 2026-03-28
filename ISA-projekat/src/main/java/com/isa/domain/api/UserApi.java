@@ -27,8 +27,9 @@ public class UserApi {
         this.userService = userService;
     }
 
-    @PostMapping(path = "/register")
-    public ResponseEntity<User> register(@RequestBody UserDTO userDTO) {
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PostMapping(path = "/add-user")
+    public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
         final User user = userService.register(userDTO);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
