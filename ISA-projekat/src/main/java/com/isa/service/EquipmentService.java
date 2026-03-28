@@ -43,4 +43,8 @@ public class EquipmentService {
     public List<Equipment> findByHospitalId(long id, String name) {
         return equipmentRepository.findAllByHospitalId(id, name);
     }
+
+    public void delete(Equipment equipment) {
+        equipmentRepository.delete(equipment);
+    }
 }

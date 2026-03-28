@@ -36,7 +36,7 @@ public class AppointmentApi {
     private final FeedbackService feedbackService;
 
     @Autowired
-    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService, MedicationService medicationService, OperationRoomBookingService operationRoomBookingService, RoomService roomService, FeedbackService feedbackService, FeedbackService feedbackService1) {
+    public AppointmentApi(AppointmentService appointmentService, AppointmentReportService appointmentReportService, HospitalService hospitalService, UserService userService, MedicationService medicationService, OperationRoomBookingService operationRoomBookingService, RoomService roomService, FeedbackService feedbackService1) {
         this.appointmentService = appointmentService;
         this.appointmentReportService = appointmentReportService;
         this.hospitalService = hospitalService;
@@ -108,7 +108,6 @@ public class AppointmentApi {
     @PostMapping(path = "/appointments/{id}/appointment-report")
     public ResponseEntity<AppointmentReport> createAppointmentReport(@RequestBody AppointmentReportDto appointmentReportDto, @PathVariable long id, @AuthenticationPrincipal Principal principal) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
-        final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(appointmentReportService.create(appointmentReportDto, appointment), HttpStatus.CREATED);
     }
 
@@ -116,7 +115,6 @@ public class AppointmentApi {
     @PostMapping(path = "/appointments/{id}/medication")
     public ResponseEntity<Medication> createMedication(@RequestBody Medication medication, @PathVariable long id, @AuthenticationPrincipal Principal principal) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
-        final User user = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(medicationService.create(medication, appointment), HttpStatus.CREATED);
     }
 
@@ -165,6 +163,14 @@ public class AppointmentApi {
         final Feedback feedback = feedbackService.findByAppointment(appointment).orElseThrow(NotFoundException::new);
 
         return new ResponseEntity<>(feedback, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @DeleteMapping("/appointments/{id}")
+    public ResponseEntity<Void> deleteAppointment(@PathVariable long id) {
+        final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
+        appointmentService.delete(appointment);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")

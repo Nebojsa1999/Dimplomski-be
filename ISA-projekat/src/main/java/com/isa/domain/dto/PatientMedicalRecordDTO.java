@@ -1,39 +1,21 @@
-package com.isa.domain.model;
+package com.isa.domain.dto;
 
 import com.isa.enums.BloodType;
-import jakarta.persistence.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity
-public class PatientMedicalRecord extends AbstractEntity {
+public class PatientMedicalRecordDTO {
 
-    @Enumerated(EnumType.STRING)
     private BloodType bloodType;
-
     private String rhFactor;
-
     private Double heightCm;
-
     private Double weightKg;
-
     private String chronicDiseases;
-
     private String previousHospitalization;
-
     private String previousSurgeries;
-
     private String familyHistory;
-
     private String allergies;
-
     private String longThermTherapy;
-
     private String specificContradictions;
-
-    @OneToOne
-    @JoinColumn(name = "patient_id", unique = true)
-    private User patient;
+    private Long patientId;
 
     public BloodType getBloodType() {
         return bloodType;
@@ -123,29 +105,11 @@ public class PatientMedicalRecord extends AbstractEntity {
         this.specificContradictions = specificContradictions;
     }
 
-    public User getPatient() {
-        return patient;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setPatient(User patient) {
-        this.patient = patient;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("bloodType", bloodType)
-                .append("rhFactor", rhFactor)
-                .append("heightCm", heightCm)
-                .append("weightKg", weightKg)
-                .append("chronicDiseases", chronicDiseases)
-                .append("previousHospitalization", previousHospitalization)
-                .append("previousSurgeries", previousSurgeries)
-                .append("familyHistory", familyHistory)
-                .append("allergies", allergies)
-                .append("longThermTherapy", longThermTherapy)
-                .append("specificContradictions", specificContradictions)
-                .append("patient", patient)
-                .toString();
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 }

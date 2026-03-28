@@ -23,8 +23,8 @@ public class ExceptionResolver {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> notFoundException(HttpServletRequest request, NotFoundException exception) {
-        LOG.error("Nor found exception", exception);
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        LOG.error("Not found exception", exception);
+        return new ResponseEntity<>(new ExceptionDto("NOT_FOUND", exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

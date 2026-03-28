@@ -1,15 +1,15 @@
 package com.isa.domain.model;
 
-import com.isa.enums.DayOfWeek;
 import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalTime;
 
 @Entity
-public class DoctorSchedule extends AbstractEntity{
+public class DoctorSchedule extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
@@ -19,6 +19,8 @@ public class DoctorSchedule extends AbstractEntity{
     private User doctor;
 
     private Instant startDate;
+
+    private Instant endDate;
 
     private LocalTime startTime;
 
@@ -52,6 +54,14 @@ public class DoctorSchedule extends AbstractEntity{
 
     public void setStartDate(Instant startDate) {
         this.startDate = startDate;
+    }
+
+    public Instant getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
     }
 
     public LocalTime getStartTime() {

@@ -78,4 +78,8 @@ public class HospitalService {
     public void save(Hospital hospital) {
         hospitalRepository.save(hospital);
     }
+
+    public void delete(Hospital hospital) {
+        hospitalRepository.delete(hospital);
+    }
 }

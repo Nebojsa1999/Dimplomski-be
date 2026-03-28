@@ -53,4 +53,8 @@ public class RoomService {
         room.setCapacity(room.getCapacity() + 1);
         roomRepository.save(room);
     }
+
+    public void delete(Room room) {
+        roomRepository.delete(room);
+    }
 }

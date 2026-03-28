@@ -1,10 +1,14 @@
 package com.isa.service;
 
+import com.isa.domain.dto.PatientMedicalRecordDTO;
 import com.isa.domain.model.PatientMedicalRecord;
+import com.isa.domain.model.User;
 import com.isa.repository.PatientMedicalRecordRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PatientMedicalRecordService {
@@ -17,21 +21,42 @@ public class PatientMedicalRecordService {
     }
 
     @Transactional
-    public PatientMedicalRecord create(PatientMedicalRecord dto) {
-        final PatientMedicalRecord patientMedicalRecord = new PatientMedicalRecord();
-        patientMedicalRecord.setPatient(dto.getPatient());
-        patientMedicalRecord.setAllergies(dto.getAllergies());
-        patientMedicalRecord.setBloodType(dto.getBloodType());
-        patientMedicalRecord.setHeightCm(dto.getHeightCm());
-        patientMedicalRecord.setWeightKg(dto.getWeightKg());
-        patientMedicalRecord.setChronicDiseases(dto.getChronicDiseases());
-        patientMedicalRecord.setFamilyHistory(dto.getFamilyHistory());
-        patientMedicalRecord.setLongThermTherapy(dto.getLongThermTherapy());
-        patientMedicalRecord.setSpecificContradictions(dto.getSpecificContradictions());
-        patientMedicalRecord.setRhFactor(dto.getRhFactor());
-        patientMedicalRecord.setPreviousSurgeries(dto.getPreviousSurgeries());
-        patientMedicalRecord.setPreviousHospitalization(dto.getPreviousHospitalization());
+    public PatientMedicalRecord create(PatientMedicalRecordDTO dto, User patient) {
+        final PatientMedicalRecord record = new PatientMedicalRecord();
+        mapDtoToEntity(dto, record);
+        record.setPatient(patient);
+        return patientMedicalRecordRepository.save(record);
+    }
 
-        return patientMedicalRecordRepository.save(patientMedicalRecord);
+    public Optional<PatientMedicalRecord> get(Long id) {
+        return patientMedicalRecordRepository.findById(id);
+    }
+
+    public Optional<PatientMedicalRecord> getByPatient(Long patientId) {
+        return patientMedicalRecordRepository.findByPatientId(patientId);
+    }
+
+    @Transactional
+    public PatientMedicalRecord update(PatientMedicalRecord record, PatientMedicalRecordDTO dto) {
+        mapDtoToEntity(dto, record);
+        return patientMedicalRecordRepository.save(record);
+    }
+
+    public void delete(PatientMedicalRecord record) {
+        patientMedicalRecordRepository.delete(record);
+    }
+
+    private void mapDtoToEntity(PatientMedicalRecordDTO dto, PatientMedicalRecord record) {
+        record.setBloodType(dto.getBloodType());
+        record.setRhFactor(dto.getRhFactor());
+        record.setHeightCm(dto.getHeightCm());
+        record.setWeightKg(dto.getWeightKg());
+        record.setChronicDiseases(dto.getChronicDiseases());
+        record.setPreviousHospitalization(dto.getPreviousHospitalization());
+        record.setPreviousSurgeries(dto.getPreviousSurgeries());
+        record.setFamilyHistory(dto.getFamilyHistory());
+        record.setAllergies(dto.getAllergies());
+        record.setLongThermTherapy(dto.getLongThermTherapy());
+        record.setSpecificContradictions(dto.getSpecificContradictions());
     }
 }

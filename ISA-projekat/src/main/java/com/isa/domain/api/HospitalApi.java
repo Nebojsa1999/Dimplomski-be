@@ -128,6 +128,30 @@ public class HospitalApi {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
+        hospitalService.delete(hospital);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @DeleteMapping("/equipment/{id}")
+    public ResponseEntity<Void> deleteEquipment(@PathVariable Long id) {
+        final Equipment equipment = equipmentService.get(id).orElseThrow(NotFoundException::new);
+        equipmentService.delete(equipment);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @DeleteMapping("/room/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+        final Room room = roomService.get(id).orElseThrow(NotFoundException::new);
+        roomService.delete(room);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
     @GetMapping(path = "/{id}/users")
     public ResponseEntity<List<User>> getUsersFromHospital(@PathVariable long id, @RequestParam(required = false) Role role, @RequestParam(required = false) String name) {
         final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);

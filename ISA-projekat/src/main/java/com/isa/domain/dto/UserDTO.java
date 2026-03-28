@@ -16,7 +16,6 @@ public class UserDTO {
     private String latitude;
     private String longitude;
     private String phone;
-    private boolean firstLogin;
     private String personalId;
     private String gender;
     private String occupation;
@@ -104,14 +103,6 @@ public class UserDTO {
         this.phone = phone;
     }
 
-    public boolean isFirstLogin() {
-        return firstLogin;
-    }
-
-    public void setFirstLogin(boolean firstLogin) {
-        this.firstLogin = firstLogin;
-    }
-
     public String getPersonalId() {
         return personalId;
     }
@@ -173,7 +164,6 @@ public class UserDTO {
                 .append("latitude", latitude)
                 .append("longitude", longitude)
                 .append("phone", phone)
-                .append("firstLogin", firstLogin)
                 .append("personalId", personalId)
                 .append("gender", gender)
                 .append("occupation", occupation)

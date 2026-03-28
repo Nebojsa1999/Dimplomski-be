@@ -41,6 +41,10 @@ public class AuthApi {
             throw new UnauthorizedException("Invalid password for user: " + loginDTO.getUsername());
         }
 
+        if (!Boolean.TRUE.equals(user.getVerified())) {
+            throw new IllegalArgumentException("User account is not verified.");
+        }
+
         final String token = jwtService.createAuthenticationToken(user.getId(), Instant.now().plus(5, ChronoUnit.MINUTES), user.getRole());
         final String refreshToken = jwtService.createRefreshToken(user.getId(), Instant.now().plus(1, ChronoUnit.DAYS));
         final LoginResponseDTO responseDTO = new LoginResponseDTO();

@@ -396,4 +396,225 @@
                 constraintName="fk_verificationtoken_user"
                 onDelete="CASCADE"/>
     </changeSet>
+
+    <changeSet id="011-user-verified" author="nebojsa">
+        <addColumn tableName="user">
+            <column name="verified" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="012-doctor-schedule-end-date" author="nebojsa">
+        <addColumn tableName="doctor_schedule">
+            <column name="end_date" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="013-drop-first-login" author="nebojsa" context="development,production">
+        <dropColumn tableName="user" columnName="first_login"/>
+    </changeSet>
+
+    <changeSet id="014-cascade-delete" author="nebojsa" context="development,production">
+        <dropAllForeignKeyConstraints baseTableName="user"/>
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_user_hospital"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="user"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department_user"
+                onDelete="CASCADE"/>
+
+        <dropAllForeignKeyConstraints baseTableName="appointment"/>
+        <addForeignKeyConstraint
+                baseTableName="appointment"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_appointment_doctor"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="appointment"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_appointment_patient"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="appointment"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_appointment_hospital"
+                onDelete="CASCADE"/>
+
+        <dropAllForeignKeyConstraints baseTableName="feedback"/>
+        <addForeignKeyConstraint
+                baseTableName="feedback"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
+                referencedColumnNames="id"
+                constraintName="fk_feedback_appointment"
+                onDelete="CASCADE"/>
+
+        <dropAllForeignKeyConstraints baseTableName="appointment_report"/>
+        <addForeignKeyConstraint
+                baseTableName="appointment_report"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
+                referencedColumnNames="id"
+                constraintName="fk_report_appointment"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="department" constraintName="fk_hospital"/>
+        <addForeignKeyConstraint
+                baseTableName="department"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_hospital"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="room" constraintName="fk_room_hospital"/>
+        <addForeignKeyConstraint
+                baseTableName="room"
+                baseColumnNames="hospital_id"
+                referencedTableName="hospital"
+                referencedColumnNames="id"
+                constraintName="fk_room_hospital"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="equipment" constraintName="fk_room"/>
+        <addForeignKeyConstraint
+                baseTableName="equipment"
+                baseColumnNames="room_id"
+                referencedTableName="room"
+                referencedColumnNames="id"
+                constraintName="fk_room"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="operation_room_booking" constraintName="fk_booking_room"/>
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="room_id"
+                referencedTableName="room"
+                referencedColumnNames="id"
+                constraintName="fk_booking_room"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="operation_room_booking" constraintName="fk_booking_doctor"/>
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_booking_doctor"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="operation_room_booking" constraintName="fk_booking_patient"/>
+        <addForeignKeyConstraint
+                baseTableName="operation_room_booking"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_booking_patient"
+                onDelete="SET NULL"/>
+
+        <dropForeignKeyConstraint baseTableName="department_procedure" constraintName="fk_department_procedure"/>
+        <addForeignKeyConstraint
+                baseTableName="department_procedure"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department_procedure"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="diagnosis" constraintName="fk_department_diagonosis"/>
+        <addForeignKeyConstraint
+                baseTableName="diagnosis"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department_diagonosis"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="medicament" constraintName="fk_department_medicament"/>
+        <addForeignKeyConstraint
+                baseTableName="medicament"
+                baseColumnNames="department_id"
+                referencedTableName="department"
+                referencedColumnNames="id"
+                constraintName="fk_department_medicament"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="medication" constraintName="fk_appointment"/>
+        <addForeignKeyConstraint
+                baseTableName="medication"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
+                referencedColumnNames="id"
+                constraintName="fk_appointment"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="medication" constraintName="fk_medication_medicament"/>
+        <addForeignKeyConstraint
+                baseTableName="medication"
+                baseColumnNames="medicament_id"
+                referencedTableName="medicament"
+                referencedColumnNames="id"
+                constraintName="fk_medication_medicament"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="lab_document" constraintName="fk_appointment_document"/>
+        <addForeignKeyConstraint
+                baseTableName="lab_document"
+                baseColumnNames="appointment_id"
+                referencedTableName="appointment"
+                referencedColumnNames="id"
+                constraintName="fk_appointment_document"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="doctor_schedule" constraintName="fk_doctor_schedule"/>
+        <addForeignKeyConstraint
+                baseTableName="doctor_schedule"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_doctor_schedule"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="favorite_doctor" constraintName="fk_doctor_favorite"/>
+        <addForeignKeyConstraint
+                baseTableName="favorite_doctor"
+                baseColumnNames="doctor_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_doctor_favorite"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="favorite_doctor" constraintName="fk_patient_favorite"/>
+        <addForeignKeyConstraint
+                baseTableName="favorite_doctor"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_patient_favorite"
+                onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="patient_medical_record" constraintName="fk_patient_medical_record"/>
+        <addForeignKeyConstraint
+                baseTableName="patient_medical_record"
+                baseColumnNames="patient_id"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                constraintName="fk_patient_medical_record"
+                onDelete="CASCADE"/>
+    </changeSet>
 </databaseChangeLog>

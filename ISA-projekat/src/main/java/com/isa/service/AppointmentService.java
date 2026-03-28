@@ -5,10 +5,8 @@ import com.isa.domain.model.Appointment;
 import com.isa.domain.model.Hospital;
 import com.isa.domain.model.User;
 import com.isa.enums.AppointmentStatus;
-import com.isa.enums.Role;
 import com.isa.exception.NotFoundException;
 import com.isa.repository.AppointmentRepository;
-import com.isa.repository.HospitalRepository;
 import com.isa.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,13 +22,11 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
-    private final HospitalRepository hospitalRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository, HospitalRepository hospitalRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
-        this.hospitalRepository = hospitalRepository;
     }
 
     @Transactional
@@ -77,37 +72,16 @@ public class AppointmentService {
                 .toList();
     }
 
-    public void removeUserFromAppointment(Appointment appointment) {
-        appointment.setPatient(null);
-        appointmentRepository.save(appointment);
-    }
-
-    @Transactional
-    public void deleteFromPast(Instant now, AppointmentStatus appointmentStatus) {
-        final List<Appointment> allOpenedInThePast = appointmentRepository.findAllOpenedInThePast(now, appointmentStatus);
-        appointmentRepository.deleteAll(allOpenedInThePast);
-    }
-
-    public void addAppointments(Instant dateTime) {
-        hospitalRepository.findAll().forEach(hospital -> userRepository.findAllByHospitalIdAndRole(hospital.getId(), Role.DOCTOR, "").forEach((doctor) -> {
-            final List<Appointment> allByDurationAndDateAndTime = appointmentRepository.findAllByDurationAndDateTimeAndDoctor(dateTime, dateTime.plus(15, ChronoUnit.MINUTES), doctor);
-            if (allByDurationAndDateAndTime.isEmpty()) {
-                final Appointment appointment = new Appointment();
-                appointment.setDoctor(doctor);
-                appointment.setDateAndTime(dateTime);
-                appointment.setDuration(15);
-                appointment.setAppointmentStatus(AppointmentStatus.OPEN);
-                appointmentRepository.save(appointment);
-            }
-        }));
-    }
-
     public Optional<Appointment> get(long id) {
         return appointmentRepository.findById(id);
     }
 
     public void save(Appointment appointment) {
         appointmentRepository.save(appointment);
+    }
+
+    public void delete(Appointment appointment) {
+        appointmentRepository.delete(appointment);
     }
 
     public List<Appointment> getScheduledAndNotFinishedAppointmentsBasedOnDate(Hospital hospital, String date) {
