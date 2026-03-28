@@ -22,10 +22,10 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendVerificationEmail(String token) {
+    public void sendVerificationEmail(String toAddress, String token) {
         final SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromAddress);
-        message.setTo(fromAddress);
+        message.setTo(toAddress);
         message.setSubject("Hospital System – Email Verification");
         message.setText(
                 "Thank you for registering.\n\n"

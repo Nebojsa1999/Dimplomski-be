@@ -81,7 +81,7 @@ public class UserService {
 
         try {
             final VerificationToken token = verificationTokenService.createToken(saved);
-            emailService.sendVerificationEmail(token.getToken());
+            emailService.sendVerificationEmail(saved.getEmail(), token.getToken());
         } catch (Exception e) {
             LOG.error("Failed to send verification email to {}: {}", saved.getEmail(), e.getMessage(), e);
         }
