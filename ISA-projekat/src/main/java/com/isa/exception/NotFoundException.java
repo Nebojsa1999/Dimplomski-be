@@ -2,7 +2,10 @@ package com.isa.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException() {
-        super();
+        super("Resource not found");
     }
 
+    public NotFoundException(String message) {
+        super(message);
+    }
 }

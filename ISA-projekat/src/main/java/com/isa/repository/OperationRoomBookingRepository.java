@@ -15,6 +15,14 @@ public interface OperationRoomBookingRepository extends JpaRepository<OperationR
 
     List<OperationRoomBooking> findAllByRoom(Room room);
 
-    @Query("SELECT operationRoomBooking FROM OperationRoomBooking operationRoomBooking WHERE operationRoomBooking.endTime < :timestamp")
-    List<OperationRoomBooking> findAllInThePast(@Param("timestamp") Instant timestamp);
+    @Query("""
+            SELECT b FROM OperationRoomBooking b
+            WHERE b.room.id = :roomId
+              AND b.startTime < :end
+              AND b.endTime > :start
+            """)
+    List<OperationRoomBooking> findOverlapping(
+            @Param("roomId") Long roomId,
+            @Param("start") Instant start,
+            @Param("end") Instant end);
 }

@@ -13,7 +13,7 @@ public class PatientMedicalRecordDTO {
     private String previousSurgeries;
     private String familyHistory;
     private String allergies;
-    private String longThermTherapy;
+    private String longTermTherapy;
     private String specificContradictions;
     private Long patientId;
 
@@ -89,12 +89,12 @@ public class PatientMedicalRecordDTO {
         this.allergies = allergies;
     }
 
-    public String getLongThermTherapy() {
-        return longThermTherapy;
+    public String getLongTermTherapy() {
+        return longTermTherapy;
     }
 
-    public void setLongThermTherapy(String longThermTherapy) {
-        this.longThermTherapy = longThermTherapy;
+    public void setLongTermTherapy(String longTermTherapy) {
+        this.longTermTherapy = longTermTherapy;
     }
 
     public String getSpecificContradictions() {

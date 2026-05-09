@@ -44,7 +44,7 @@ public class DepartmentProcedureApi {
         return new ResponseEntity<>(procedure, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'PATIENT')")
     @GetMapping("/procedures")
     public ResponseEntity<List<DepartmentProcedure>> list(
             @RequestParam(required = false) Long departmentId,

@@ -42,10 +42,10 @@ public class DepartmentApi {
         return new ResponseEntity<>(department, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'PATIENT')")
     @GetMapping("/departments")
-    public ResponseEntity<List<Department>> list(@RequestParam(required = false) Long hospitalId) {
-        return new ResponseEntity<>(departmentService.list(hospitalId), HttpStatus.OK);
+    public ResponseEntity<List<Department>> list(@RequestParam(required = false) Long hospitalId, @RequestParam(required = false) String name) {
+        return new ResponseEntity<>(departmentService.list(hospitalId, name), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")

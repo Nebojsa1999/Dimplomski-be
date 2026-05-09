@@ -1,8 +1,9 @@
 package com.isa.repository;
 
 import com.isa.domain.model.Appointment;
-import com.isa.domain.model.User;
 import com.isa.enums.AppointmentStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +14,6 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-
-    List<Appointment> findAllByPatientId(Long id);
 
     List<Appointment> findAllByDoctorHospitalId(Long id);
 
@@ -32,9 +31,48 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             """)
     List<Appointment> findAll(@Param("appointmentStatus") AppointmentStatus appointmentStatus, @Param("from") Instant from, @Param("to") Instant to);
 
-    @Query("SELECT appointment FROM Appointment appointment WHERE appointment.dateAndTime < :timestamp and appointment.appointmentStatus = :status")
-    List<Appointment> findAllOpenedInThePast(@Param("timestamp") Instant timestamp, @Param("status") AppointmentStatus status);
+    @Query("""
+            SELECT appointment FROM Appointment appointment
+            WHERE appointment.doctor.id = :doctorId
+              AND appointment.appointmentStatus = 'SCHEDULED' OR appointment.appointmentStatus = 'FINISHED'
+              AND appointment.dateAndTime >= :start
+              AND appointment.dateAndTime < :end
+            """)
+    List<Appointment> findConflictingForDoctor(@Param("doctorId") Long doctorId, @Param("start") Instant start, @Param("end") Instant end);
 
-    @Query("SELECT appointment FROM Appointment appointment WHERE appointment.dateAndTime >= :start and appointment.dateAndTime < :end and appointment.doctor = :doctor")
-    List<Appointment> findAllByDurationAndDateTimeAndDoctor(@Param("start") Instant start, @Param("end") Instant end, @Param("doctor") User Doctor);
+    @Query("""
+            SELECT appointment FROM Appointment appointment
+            WHERE appointment.patient.id = :patientId
+              AND (:status IS NULL OR appointment.appointmentStatus = :status)
+              AND (:from IS NULL OR appointment.dateAndTime >= :from)
+              AND (:to IS NULL OR appointment.dateAndTime <= :to)
+            ORDER BY
+              CASE WHEN appointment.appointmentStatus = 'SCHEDULED' THEN 0 ELSE 1 END ASC,
+              CASE WHEN appointment.appointmentStatus = 'SCHEDULED' THEN appointment.dateAndTime END ASC,
+              CASE WHEN appointment.appointmentStatus != 'SCHEDULED' THEN appointment.dateAndTime END DESC
+            """)
+    Page<Appointment> findByPatient(@Param("patientId") Long patientId, @Param("status") AppointmentStatus status, @Param("from") Instant from, @Param("to") Instant to, Pageable pageable);
+
+    @Query("""
+            SELECT appointment FROM Appointment appointment
+            WHERE appointment.doctor.id = :doctorId
+              AND (:status IS NULL OR appointment.appointmentStatus = :status)
+              AND (:from IS NULL OR appointment.dateAndTime >= :from)
+              AND (:to IS NULL OR appointment.dateAndTime <= :to)
+            ORDER BY
+              CASE WHEN appointment.appointmentStatus = 'SCHEDULED' THEN 0 ELSE 1 END ASC,
+              CASE WHEN appointment.appointmentStatus = 'SCHEDULED' THEN appointment.dateAndTime END ASC,
+              CASE WHEN appointment.appointmentStatus != 'SCHEDULED' THEN appointment.dateAndTime END DESC
+            """)
+    Page<Appointment> findByDoctor(@Param("doctorId") Long doctorId, @Param("status") AppointmentStatus status, @Param("from") Instant from, @Param("to") Instant to, Pageable pageable);
+
+    @Query("""
+            SELECT appointment FROM Appointment appointment
+            WHERE appointment.doctor.id = :doctorId
+              AND appointment.dateAndTime >= :monthStart
+              AND appointment.dateAndTime < :monthEnd
+            ORDER BY appointment.dateAndTime ASC
+            """)
+    List<Appointment> findByDoctorAndMonth(@Param("doctorId") Long doctorId, @Param("monthStart") Instant monthStart, @Param("monthEnd") Instant monthEnd);
+
 }

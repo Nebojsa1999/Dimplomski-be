@@ -14,8 +14,8 @@ public class Medicament extends AbstractEntity {
     private String dosage;
 
     @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @JoinColumn(name = "department_name_id")
+    private DepartmentName departmentName;
 
     public String getName() {
         return name;
@@ -41,12 +41,12 @@ public class Medicament extends AbstractEntity {
         this.dosage = dosage;
     }
 
-    public Department getDepartment() {
-        return department;
+    public DepartmentName getDepartmentName() {
+        return departmentName;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentName(DepartmentName departmentName) {
+        this.departmentName = departmentName;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Medicament extends AbstractEntity {
                 .append("name", name)
                 .append("instructions", instructions)
                 .append("dosage", dosage)
-                .append("department", department)
+                .append("departmentName", departmentName)
                 .toString();
     }
 }

@@ -14,7 +14,7 @@ public interface DepartmentProcedureRepository extends JpaRepository<DepartmentP
     @Query("""
             SELECT p FROM DepartmentProcedure p
             WHERE (:departmentId IS NULL OR p.department.id = :departmentId)
-              AND (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
+              AND (:name IS NULL OR :name = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
             """)
     List<DepartmentProcedure> findAllFiltered(@Param("departmentId") Long departmentId,
                                               @Param("name") String name);

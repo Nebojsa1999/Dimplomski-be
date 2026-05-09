@@ -2,13 +2,10 @@ package com.isa.service;
 
 import com.isa.domain.dto.ChangePasswordDTO;
 import com.isa.domain.dto.UserDTO;
-import com.isa.domain.model.Appointment;
-import com.isa.domain.model.Hospital;
-import com.isa.domain.model.User;
-import com.isa.domain.model.VerificationToken;
-import com.isa.enums.AppointmentStatus;
+import com.isa.domain.model.*;
 import com.isa.enums.Gender;
 import com.isa.enums.Role;
+import com.isa.repository.DepartmentRepository;
 import com.isa.repository.HospitalRepository;
 import com.isa.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -33,6 +30,7 @@ public class UserService {
     private final AppointmentService appointmentService;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
+    private final DepartmentRepository departmentRepository;
 
     @Autowired
     public UserService(UserRepository userRepository,
@@ -40,13 +38,14 @@ public class UserService {
                        HospitalRepository hospitalRepository,
                        AppointmentService appointmentService,
                        VerificationTokenService verificationTokenService,
-                       EmailService emailService) {
+                       EmailService emailService, DepartmentRepository departmentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.hospitalRepository = hospitalRepository;
         this.appointmentService = appointmentService;
         this.verificationTokenService = verificationTokenService;
         this.emailService = emailService;
+        this.departmentRepository = departmentRepository;
     }
 
     @Transactional
@@ -69,12 +68,18 @@ public class UserService {
         user.setOccupationInfo(userDTO.getOccupationInfo());
         user.setOccupation(userDTO.getOccupation());
         user.setPersonalId(userDTO.getPersonalId());
-        user.setVerified(false);
+        user.setVerified(user.getRole() != Role.PATIENT);
 
         if (userDTO.getHospitalId() != null) {
             final Hospital hospital = hospitalRepository.findById(userDTO.getHospitalId())
                     .orElseThrow(() -> new IllegalArgumentException("Hospital not found."));
             user.setHospital(hospital);
+
+            if (userDTO.getDepartmentId() != null) {
+                final Department department = departmentRepository.findById(userDTO.getDepartmentId())
+                        .orElseThrow(() -> new IllegalArgumentException("Department not found."));
+                user.setDepartment(department);
+            }
         }
 
         final User saved = userRepository.save(user);
@@ -98,9 +103,7 @@ public class UserService {
     }
 
     public List<User> getAllByHospital(Hospital hospital, Role role, String name) {
-        return role != null
-                ? userRepository.findAllByHospitalIdAndRole(hospital.getId(), role, name)
-                : userRepository.findAllByHospitalId(hospital.getId(), name);
+        return userRepository.findAllByHospitalIdIncludingPatients(hospital.getId(), role, name);
     }
 
     public Optional<User> get(long userId) {
@@ -126,16 +129,16 @@ public class UserService {
         user.setOccupation(userDTO.getOccupation());
         user.setPersonalId(userDTO.getPersonalId());
         user.setGender(Gender.valueOf(userDTO.getGender()));
+        if (userDTO.getDepartmentId() != null) {
+            final Department department = departmentRepository.findById(userDTO.getDepartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("Department not found."));
+            user.setDepartment(department);
+        }
         return userRepository.save(user);
     }
 
     @Transactional
     public void lowerUserPoints(Appointment appointment) {
-        final User patient = appointment.getPatient();
-        patient.setPoints(patient.getPoints() - 1);
-        userRepository.save(patient);
-        appointment.setPatient(null);
-        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
-        appointmentService.save(appointment);
+        appointmentService.penalisePatient(appointment);
     }
 }

@@ -32,8 +32,7 @@ public class DoctorScheduleService {
     public List<DoctorSchedule> create(DoctorScheduleDTO dto, User doctor) {
         return dto.getDays().stream()
                 .map(day -> {
-                    final List<DoctorSchedule> overlapping = doctorScheduleRepository.findOverlapping(
-                            doctor.getId(), day.getDayOfWeek(), day.getStartTime(), day.getEndTime(), 0L);
+                    final List<DoctorSchedule> overlapping = doctorScheduleRepository.findOverlapping(doctor.getId(), day.getDayOfWeek(), day.getStartTime(), day.getEndTime(), 0L, dto.getStartDate(), dto.getEndDate());
                     if (!overlapping.isEmpty()) {
                         throw new IllegalArgumentException(
                                 "Schedule for " + day.getDayOfWeek() + " overlaps with an existing schedule for this doctor.");
@@ -70,8 +69,7 @@ public class DoctorScheduleService {
     @Transactional
     public DoctorSchedule update(DoctorSchedule schedule, DoctorScheduleDayDTO dto) {
         final DayOfWeek dayOfWeek = dto.getDayOfWeek() != null ? dto.getDayOfWeek() : schedule.getDayOfWeek();
-        final List<DoctorSchedule> overlapping = doctorScheduleRepository.findOverlapping(
-                schedule.getDoctor().getId(), dayOfWeek, dto.getStartTime(), dto.getEndTime(), schedule.getId());
+        final List<DoctorSchedule> overlapping = doctorScheduleRepository.findOverlapping(schedule.getDoctor().getId(), dayOfWeek, dto.getStartTime(), dto.getEndTime(), schedule.getId(), schedule.getStartDate(), schedule.getEndDate());
         if (!overlapping.isEmpty()) {
             throw new IllegalArgumentException(
                     "Schedule for " + dayOfWeek + " overlaps with an existing schedule for this doctor.");

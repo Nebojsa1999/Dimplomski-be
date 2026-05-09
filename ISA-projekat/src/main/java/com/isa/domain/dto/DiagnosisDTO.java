@@ -5,6 +5,7 @@ public class DiagnosisDTO {
     private String code;
     private String name;
     private String description;
+    private String departmentName;
 
     public String getCode() {
         return code;
@@ -28,5 +29,13 @@ public class DiagnosisDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }

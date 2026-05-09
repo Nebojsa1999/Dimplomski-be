@@ -22,6 +22,7 @@ public class UserDTO {
     private String occupationInfo;
     private Role role;
     private Long hospitalId;
+    private Long departmentId;
 
     public String getEmail() {
         return email;
@@ -151,6 +152,14 @@ public class UserDTO {
         this.hospitalId = hospitalId;
     }
 
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -170,6 +179,7 @@ public class UserDTO {
                 .append("occupationInfo", occupationInfo)
                 .append("role", role)
                 .append("hospitalId", hospitalId)
+                .append("departmentId", departmentId)
                 .toString();
     }
 }

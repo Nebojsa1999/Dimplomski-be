@@ -56,7 +56,7 @@ public class PatientMedicalRecordService {
         record.setPreviousSurgeries(dto.getPreviousSurgeries());
         record.setFamilyHistory(dto.getFamilyHistory());
         record.setAllergies(dto.getAllergies());
-        record.setLongThermTherapy(dto.getLongThermTherapy());
+        record.setLongThermTherapy(dto.getLongTermTherapy());
         record.setSpecificContradictions(dto.getSpecificContradictions());
     }
 }
