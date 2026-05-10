@@ -34,7 +34,7 @@ public class PatientMedicalRecordResponseDTO {
     private final String previousSurgeries;
     private final String familyHistory;
     private final String allergies;
-    private final String longThermTherapy;
+    private final String longTermTherapy;
     private final String specificContradictions;
 
     public PatientMedicalRecordResponseDTO(PatientMedicalRecord record, User patient) {
@@ -61,7 +61,7 @@ public class PatientMedicalRecordResponseDTO {
         this.previousSurgeries = record.getPreviousSurgeries();
         this.familyHistory = record.getFamilyHistory();
         this.allergies = record.getAllergies();
-        this.longThermTherapy = record.getLongThermTherapy();
+        this.longTermTherapy = record.getLongThermTherapy();
         this.specificContradictions = record.getSpecificContradictions();
     }
 
@@ -88,6 +88,6 @@ public class PatientMedicalRecordResponseDTO {
     public String getPreviousSurgeries() { return previousSurgeries; }
     public String getFamilyHistory() { return familyHistory; }
     public String getAllergies() { return allergies; }
-    public String getLongThermTherapy() { return longThermTherapy; }
+    public String getLongTermTherapy() { return longTermTherapy; }
     public String getSpecificContradictions() { return specificContradictions; }
 }

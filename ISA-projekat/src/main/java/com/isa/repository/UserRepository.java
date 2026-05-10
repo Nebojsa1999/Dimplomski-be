@@ -26,17 +26,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByName(@Param("searchFilter") String searchFilter);
 
     @Query("""
-            SELECT user
-                   FROM User user
-                     WHERE user.hospital.id = :hospitalId AND ( :searchFilter IS NULL OR :searchFilter = '' OR  LOWER(user.firstName) LIKE LOWER(CONCAT('%', :searchFilter, '%')))
+            SELECT user FROM User user
+            WHERE (user.hospital.id = :hospitalId OR user.hospital IS NULL)
+              AND (:role IS NULL OR user.role = :role)
+              AND (:searchFilter IS NULL OR :searchFilter = '' OR LOWER(user.firstName) LIKE LOWER(CONCAT('%', :searchFilter, '%')))
             """)
-    List<User> findAllByHospitalId(Long hospitalId, @Param("searchFilter") String searchFilter);
+    List<User> findAllByHospitalIdIncludingPatients(@Param("hospitalId") long hospitalId, @Param("role") Role role, @Param("searchFilter") String searchFilter);
 
-    @Query("""
-            SELECT user
-                   FROM User user
-                     WHERE user.hospital.id = :hospitalId AND user.role = :role AND ( :searchFilter IS NULL
-                                                                                           OR :searchFilter = '' OR  LOWER(user.firstName) LIKE LOWER(CONCAT('%', :searchFilter, '%')))
-            """)
-    List<User> findAllByHospitalIdAndRole(@Param("hospitalId") long hospitalId, @Param("role") Role role, @Param("searchFilter") String searchFilter);
+    List<User> findAllByDepartmentId(Long departmentId);
 }

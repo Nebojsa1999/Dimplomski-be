@@ -51,7 +51,10 @@ public class PdfReportGenerator {
             currentY = writeLine(content, margin, xValue, currentY, "Family History:", report.getFamilyHistory());
             currentY = writeLine(content, margin, xValue, currentY, "Blood Pressure:", report.getBloodPressure());
             currentY = writeLine(content, margin, xValue, currentY, "Heart Rate:", report.getHearthRate());
-            writeLine(content, margin, xValue, currentY, "Diagnosis:", report.getDiagnosis());
+            currentY = writeLine(content, margin, xValue, currentY, "Diagnosis:", report.getDiagnosis());
+            currentY = writeLine(content, margin, xValue, currentY, "Therapy:", report.getTherapy());
+            currentY = writeLine(content, margin, xValue, currentY, "Lab Results:", report.getLabResults());
+            writeLine(content, margin, xValue, currentY, "Doctor's Comment:", report.getDoctorsComment());
 
             content.close();
 

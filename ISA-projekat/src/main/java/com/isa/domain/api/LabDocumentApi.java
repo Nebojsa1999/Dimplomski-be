@@ -6,8 +6,7 @@ import com.isa.exception.NotFoundException;
 import com.isa.service.AppointmentService;
 import com.isa.service.LabDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,10 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -56,7 +51,7 @@ public class LabDocumentApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping("/{appointmentId}/lab-documents")
-    public ResponseEntity<List<LabDocument>> listByAppointment(@PathVariable long appointmentId) {
+    public ResponseEntity<LabDocument> getByAppointment(@PathVariable long appointmentId) {
         final Appointment appointment = appointmentService.get(appointmentId).orElseThrow(NotFoundException::new);
         return new ResponseEntity<>(labDocumentService.listByAppointment(appointment.getId()), HttpStatus.OK);
     }
@@ -70,18 +65,20 @@ public class LabDocumentApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping("/lab-documents/{id}/download")
-    public ResponseEntity<Resource> download(@PathVariable Long id) throws MalformedURLException {
+    public ResponseEntity<byte[]> download(@PathVariable Long id) {
         final LabDocument document = labDocumentService.get(id).orElseThrow(NotFoundException::new);
-        final Path filePath = Paths.get(document.getFilePath());
-        final Resource resource = new UrlResource(filePath.toUri());
-        if (!resource.exists() || !resource.isReadable()) {
-            throw new NotFoundException();
-        }
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + filePath.getFileName() + "\"")
-                .body(resource);
+        final String filename = document.getOriginalFilename() != null ? document.getOriginalFilename() : "document";
+        final MediaType mediaType = document.getContentType() != null
+                ? MediaType.parseMediaType(document.getContentType())
+                : MediaType.APPLICATION_OCTET_STREAM;
+        final boolean isImage = mediaType.getType().equals("image");
+        final ContentDisposition disposition = isImage
+                ? ContentDisposition.inline().filename(filename).build()
+                : ContentDisposition.attachment().filename(filename).build();
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+        headers.setContentDisposition(disposition);
+        return new ResponseEntity<>(document.getContent(), headers, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")

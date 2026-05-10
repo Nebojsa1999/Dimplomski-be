@@ -23,6 +23,12 @@ public class AppointmentReportDto {
 
     private String diagnosis;
 
+    private String therapy;
+
+    private String labResults;
+
+    private String doctorsComment;
+
     public BloodType getBloodType() {
         return bloodType;
     }
@@ -79,6 +85,30 @@ public class AppointmentReportDto {
         this.diagnosis = diagnosis;
     }
 
+    public String getTherapy() {
+        return therapy;
+    }
+
+    public void setTherapy(String therapy) {
+        this.therapy = therapy;
+    }
+
+    public String getLabResults() {
+        return labResults;
+    }
+
+    public void setLabResults(String labResults) {
+        this.labResults = labResults;
+    }
+
+    public String getDoctorsComment() {
+        return doctorsComment;
+    }
+
+    public void setDoctorsComment(String doctorsComment) {
+        this.doctorsComment = doctorsComment;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -89,6 +119,9 @@ public class AppointmentReportDto {
                 .append("bloodPressure", bloodPressure)
                 .append("hearthRate", hearthRate)
                 .append("diagnosis", diagnosis)
+                .append("therapy", therapy)
+                .append("labResults", labResults)
+                .append("doctorsComment", doctorsComment)
                 .toString();
     }
 }

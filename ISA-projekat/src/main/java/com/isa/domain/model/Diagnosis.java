@@ -14,8 +14,8 @@ public class Diagnosis extends AbstractEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    @JoinColumn(name = "department_name_id")
+    private DepartmentName departmentName;
 
     public String getCode() {
         return code;
@@ -41,12 +41,12 @@ public class Diagnosis extends AbstractEntity {
         this.description = description;
     }
 
-    public Department getDepartment() {
-        return department;
+    public DepartmentName getDepartmentName() {
+        return departmentName;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentName(DepartmentName departmentName) {
+        this.departmentName = departmentName;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class Diagnosis extends AbstractEntity {
                 .append("code", code)
                 .append("name", name)
                 .append("description", description)
-                .append("department", department)
+                .append("departmentName", departmentName)
                 .toString();
     }
 }

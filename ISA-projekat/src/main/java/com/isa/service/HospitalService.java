@@ -1,13 +1,11 @@
 package com.isa.service;
 
-
 import com.isa.domain.dto.HospitalDto;
 import com.isa.domain.model.Hospital;
-import com.isa.domain.model.Feedback;
+import com.isa.repository.FeedbackRepository;
 import com.isa.repository.HospitalRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -18,13 +16,12 @@ import java.util.Optional;
 public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
-
-    private final FeedbackService feedbackService;
+    private final FeedbackRepository feedbackRepository;
 
     @Autowired
-    public HospitalService(HospitalRepository hospitalRepository, @Lazy FeedbackService feedbackService) {
+    public HospitalService(HospitalRepository hospitalRepository, FeedbackRepository feedbackRepository) {
         this.hospitalRepository = hospitalRepository;
-        this.feedbackService = feedbackService;
+        this.feedbackRepository = feedbackRepository;
     }
 
     public Hospital update(Hospital hospital, HospitalDto hospitalDto) {
@@ -39,8 +36,7 @@ public class HospitalService {
         hospital.setDescription(hospitalDto.getDescription());
         hospital.setStartTime(LocalTime.parse(hospitalDto.getStartTime()));
         hospital.setEndTime(LocalTime.parse(hospitalDto.getEndTime()));
-        hospitalRepository.save(hospital);
-        return hospital;
+        return hospitalRepository.save(hospital);
     }
 
     public Hospital create(HospitalDto hospitalDto) {
@@ -59,12 +55,14 @@ public class HospitalService {
         return hospitalRepository.save(hospital);
     }
 
-    public Double getAverageRating(Hospital hospital) {
-        final List<Feedback> allByHospital = feedbackService.findAllByHospital(hospital);
-        return allByHospital.stream()
-                .mapToDouble(Feedback::getGrade)
-                .average()
-                .orElse(0D);
+    public double getAverageRating(Hospital hospital) {
+        return feedbackRepository.findAverageGradeByHospitalId(hospital.getId()).orElse(0.0);
+    }
+
+    public void recalculateRating(Hospital hospital) {
+        final double avg = getAverageRating(hospital);
+        hospital.setAverageRating(avg);
+        hospitalRepository.save(hospital);
     }
 
     public Optional<Hospital> get(long id) {

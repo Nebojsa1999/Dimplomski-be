@@ -1,8 +1,9 @@
 package com.isa.service;
 
 import com.isa.domain.dto.DiagnosisDTO;
-import com.isa.domain.model.Department;
+import com.isa.domain.model.DepartmentName;
 import com.isa.domain.model.Diagnosis;
+import com.isa.repository.DepartmentNameRepository;
 import com.isa.repository.DiagnosisRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +16,27 @@ import java.util.Optional;
 public class DiagnosisService {
 
     private final DiagnosisRepository diagnosisRepository;
+    private final DepartmentNameRepository departmentNameRepository;
 
     @Autowired
-    public DiagnosisService(DiagnosisRepository diagnosisRepository) {
+    public DiagnosisService(DiagnosisRepository diagnosisRepository,
+                            DepartmentNameRepository departmentNameRepository) {
         this.diagnosisRepository = diagnosisRepository;
+        this.departmentNameRepository = departmentNameRepository;
     }
 
     @Transactional
-    public Diagnosis create(DiagnosisDTO dto, Department department) {
-        diagnosisRepository.findByCodeAndDepartmentId(dto.getCode(), department.getId())
+    public Diagnosis create(DiagnosisDTO dto) {
+        final String departmentName = dto.getDepartmentName();
+        final DepartmentName deptName = findOrCreateDepartmentName(departmentName);
+        diagnosisRepository.findByCodeAndDepartmentNameName(dto.getCode(), departmentName)
                 .ifPresent(existing -> {
                     throw new IllegalArgumentException(
                             "A diagnosis with code '" + dto.getCode() + "' already exists in this department.");
                 });
         final Diagnosis diagnosis = new Diagnosis();
         mapDtoToEntity(dto, diagnosis);
-        diagnosis.setDepartment(department);
+        diagnosis.setDepartmentName(deptName);
         return diagnosisRepository.save(diagnosis);
     }
 
@@ -38,15 +44,15 @@ public class DiagnosisService {
         return diagnosisRepository.findById(id);
     }
 
-    public List<Diagnosis> list(Long departmentId) {
-        return departmentId != null
-                ? diagnosisRepository.findAllByDepartmentId(departmentId)
+    public List<Diagnosis> list(String departmentName) {
+        return departmentName != null
+                ? diagnosisRepository.findAllByDepartmentNameName(departmentName)
                 : diagnosisRepository.findAll();
     }
 
     @Transactional
     public Diagnosis update(Diagnosis diagnosis, DiagnosisDTO dto) {
-        diagnosisRepository.findByCodeAndDepartmentId(dto.getCode(), diagnosis.getDepartment().getId())
+        diagnosisRepository.findByCodeAndDepartmentNameName(dto.getCode(), diagnosis.getDepartmentName().getName())
                 .filter(existing -> !existing.getId().equals(diagnosis.getId()))
                 .ifPresent(existing -> {
                     throw new IllegalArgumentException(
@@ -58,6 +64,14 @@ public class DiagnosisService {
 
     public void delete(Diagnosis diagnosis) {
         diagnosisRepository.delete(diagnosis);
+    }
+
+    private DepartmentName findOrCreateDepartmentName(String name) {
+        return departmentNameRepository.findByName(name).orElseGet(() -> {
+                    final DepartmentName newDeptName = new DepartmentName();
+                    newDeptName.setName(name);
+                    return departmentNameRepository.save(newDeptName);
+                });
     }
 
     private void mapDtoToEntity(DiagnosisDTO dto, Diagnosis diagnosis) {

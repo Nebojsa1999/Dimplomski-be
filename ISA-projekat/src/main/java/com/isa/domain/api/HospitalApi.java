@@ -3,7 +3,6 @@ package com.isa.domain.api;
 import com.isa.config.Principal;
 import com.isa.domain.dto.*;
 import com.isa.domain.model.*;
-import com.isa.enums.Role;
 import com.isa.enums.RoomType;
 import com.isa.exception.NotFoundException;
 import com.isa.service.*;
@@ -23,15 +22,13 @@ import java.util.List;
 public class HospitalApi {
 
     private final HospitalService hospitalService;
-    private final UserService userService;
 
     private final EquipmentService equipmentService;
     private final RoomService roomService;
 
     @Autowired
-    public HospitalApi(HospitalService hospitalService, UserService userService, EquipmentService equipmentService, RoomService roomService) {
+    public HospitalApi(HospitalService hospitalService, EquipmentService equipmentService, RoomService roomService) {
         this.hospitalService = hospitalService;
-        this.userService = userService;
         this.equipmentService = equipmentService;
         this.roomService = roomService;
     }
@@ -58,7 +55,7 @@ public class HospitalApi {
         return new ResponseEntity<>(hospital, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'PATIENT')")
     @GetMapping
     public ResponseEntity<List<Hospital>> list(@RequestParam(required = false) String name) {
         final List<Hospital> list = hospitalService.list(name).stream()
@@ -149,13 +146,6 @@ public class HospitalApi {
         final Room room = roomService.get(id).orElseThrow(NotFoundException::new);
         roomService.delete(room);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
-    @GetMapping(path = "/{id}/users")
-    public ResponseEntity<List<User>> getUsersFromHospital(@PathVariable long id, @RequestParam(required = false) Role role, @RequestParam(required = false) String name) {
-        final Hospital hospital = hospitalService.get(id).orElseThrow(NotFoundException::new);
-        return new ResponseEntity<>(userService.getAllByHospital(hospital, role, name), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DiagnosisRepository extends JpaRepository<Diagnosis, Long> {
 
-    List<Diagnosis> findAllByDepartmentId(Long departmentId);
+    List<Diagnosis> findAllByDepartmentNameName(String departmentName);
 
-    Optional<Diagnosis> findByCodeAndDepartmentId(String code, Long departmentId);
+    Optional<Diagnosis> findByCodeAndDepartmentNameName(String code, String departmentName);
 }

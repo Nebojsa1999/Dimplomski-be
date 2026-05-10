@@ -33,10 +33,25 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
               AND s.id <> :excludeId
               AND s.startTime < :endTime
               AND s.endTime > :startTime
+              AND (:endDate IS NULL OR s.startDate <= :endDate)
+              AND (s.endDate IS NULL OR s.endDate >= :startDate)
             """)
     List<DoctorSchedule> findOverlapping(@Param("doctorId") Long doctorId,
                                          @Param("dayOfWeek") DayOfWeek dayOfWeek,
                                          @Param("startTime") LocalTime startTime,
                                          @Param("endTime") LocalTime endTime,
-                                         @Param("excludeId") Long excludeId);
+                                         @Param("excludeId") Long excludeId,
+                                         @Param("startDate") Instant startDate,
+                                         @Param("endDate") Instant endDate);
+
+    @Query("""
+            SELECT s FROM DoctorSchedule s
+            WHERE s.doctor.id = :doctorId
+              AND s.dayOfWeek = :dayOfWeek
+              AND s.startDate <= :date
+              AND (s.endDate IS NULL OR s.endDate >= :date)
+            """)
+    List<DoctorSchedule> findActiveForDoctorOnDay(@Param("doctorId") Long doctorId,
+                                                   @Param("dayOfWeek") DayOfWeek dayOfWeek,
+                                                   @Param("date") Instant date);
 }

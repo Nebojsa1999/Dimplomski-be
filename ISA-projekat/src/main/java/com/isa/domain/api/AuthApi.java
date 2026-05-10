@@ -4,6 +4,7 @@ import com.isa.config.CustomUserDetailsService;
 import com.isa.config.JwtService;
 import com.isa.domain.dto.LoginDTO;
 import com.isa.domain.dto.LoginResponseDTO;
+import com.isa.domain.dto.UserDTO;
 import com.isa.domain.model.User;
 import com.isa.exception.NotFoundException;
 import com.isa.exception.UnauthorizedException;
@@ -30,6 +31,11 @@ public class AuthApi {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.userService = userService;
+    }
+
+    @PostMapping(path = "/register")
+    public ResponseEntity<User> register(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(userService.register(userDTO), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")

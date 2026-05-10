@@ -1,19 +1,23 @@
 package com.isa.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class LabDocument extends AbstractEntity{
+public class LabDocument extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    private String filePath;
+    private String originalFilename;
+
+    private String contentType;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] content;
 
     public Appointment getAppointment() {
         return appointment;
@@ -23,19 +27,36 @@ public class LabDocument extends AbstractEntity{
         this.appointment = appointment;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getOriginalFilename() {
+        return originalFilename;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("appointment", appointment)
-                .append("filePath", filePath)
+                .append("originalFilename", originalFilename)
+                .append("contentType", contentType)
                 .toString();
     }
 }

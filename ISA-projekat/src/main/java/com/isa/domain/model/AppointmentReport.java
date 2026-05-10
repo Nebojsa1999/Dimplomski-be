@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class AppointmentReport extends AbstractEntity{
+public class AppointmentReport extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
@@ -23,6 +23,14 @@ public class AppointmentReport extends AbstractEntity{
     private String hearthRate;
 
     private String diagnosis;
+
+    private String therapy;
+
+    @Column(columnDefinition = "TEXT")
+    private String labResults;
+
+    @Column(columnDefinition = "TEXT")
+    private String doctorsComment;
 
     @ManyToOne
     @JoinColumn(name = "appointment_id")
@@ -92,6 +100,30 @@ public class AppointmentReport extends AbstractEntity{
         this.diagnosis = diagnosis;
     }
 
+    public String getTherapy() {
+        return therapy;
+    }
+
+    public void setTherapy(String therapy) {
+        this.therapy = therapy;
+    }
+
+    public String getLabResults() {
+        return labResults;
+    }
+
+    public void setLabResults(String labResults) {
+        this.labResults = labResults;
+    }
+
+    public String getDoctorsComment() {
+        return doctorsComment;
+    }
+
+    public void setDoctorsComment(String doctorsComment) {
+        this.doctorsComment = doctorsComment;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -102,6 +134,9 @@ public class AppointmentReport extends AbstractEntity{
                 .append("bloodPressure", bloodPressure)
                 .append("hearthRate", hearthRate)
                 .append("diagnosis", diagnosis)
+                .append("therapy", therapy)
+                .append("labResults", labResults)
+                .append("doctorsComment", doctorsComment)
                 .toString();
     }
 }

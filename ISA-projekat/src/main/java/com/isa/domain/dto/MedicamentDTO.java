@@ -5,6 +5,7 @@ public class MedicamentDTO {
     private String name;
     private String instructions;
     private String dosage;
+    private String departmentName;
 
     public String getName() {
         return name;
@@ -28,5 +29,13 @@ public class MedicamentDTO {
 
     public void setDosage(String dosage) {
         this.dosage = dosage;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }

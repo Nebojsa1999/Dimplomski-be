@@ -3,8 +3,11 @@ package com.isa.domain.api;
 import com.isa.config.Principal;
 import com.isa.domain.dto.ChangePasswordDTO;
 import com.isa.domain.dto.UserDTO;
+import com.isa.domain.model.Hospital;
 import com.isa.domain.model.User;
+import com.isa.enums.Role;
 import com.isa.exception.NotFoundException;
+import com.isa.service.HospitalService;
 import com.isa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,14 +24,17 @@ import java.util.List;
 public class UserApi {
 
     private final UserService userService;
+    private final HospitalService hospitalService;
 
     @Autowired
-    public UserApi(UserService userService) {
+    public UserApi(UserService userService, HospitalService hospitalService) {
         this.userService = userService;
+        this.hospitalService = hospitalService;
     }
 
-    @PostMapping(path = "/register")
-    public ResponseEntity<User> register(@RequestBody UserDTO userDTO) {
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PostMapping(path = "/add-user")
+    public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
         final User user = userService.register(userDTO);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -55,6 +61,12 @@ public class UserApi {
     @GetMapping
     public ResponseEntity<List<User>> list(@RequestParam(required = false) String name) {
         return new ResponseEntity<>(userService.list(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/hospitals/{hospitalId}")
+    public ResponseEntity<List<User>> listByHospital(@PathVariable long hospitalId, @RequestParam(required = false) Role role, @RequestParam(required = false) String name) {
+        final Hospital hospital = hospitalService.get(hospitalId).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(userService.getAllByHospital(hospital, role, name));
     }
 
     @PutMapping(path = "/change-password")

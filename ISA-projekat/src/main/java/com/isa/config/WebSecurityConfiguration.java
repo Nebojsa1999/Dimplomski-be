@@ -30,7 +30,7 @@ public class WebSecurityConfiguration {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/verify").permitAll()
+                        .requestMatchers("/api/verify", "/api/register", "/api/login").permitAll()
                         .anyRequest().permitAll()
                 )
                 .build();

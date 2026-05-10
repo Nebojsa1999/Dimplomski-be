@@ -25,7 +25,11 @@ public class Appointment extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
 
-    public Instant getDateAndTime() {
+    @ManyToOne
+    @JoinColumn(name = "department_procedure_id")
+    private DepartmentProcedure departmentProcedure;
+
+public Instant getDateAndTime() {
         return dateAndTime;
     }
 
@@ -63,6 +67,14 @@ public class Appointment extends AbstractEntity {
 
     public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
+    }
+
+    public DepartmentProcedure getDepartmentProcedure() {
+        return departmentProcedure;
+    }
+
+    public void setDepartmentProcedure(DepartmentProcedure departmentProcedure) {
+        this.departmentProcedure = departmentProcedure;
     }
 
     @Override
