@@ -82,8 +82,9 @@ public class AppointmentApi {
     }
 
     @GetMapping("api/appointments/open")
-    public ResponseEntity<List<OpenSlotDTO>> listSlotsByDepartment(@RequestParam Long departmentId, @RequestParam Long from, @RequestParam Long to) {
-        return ResponseEntity.ok(appointmentService.getOpenByDepartment(departmentId, Instant.ofEpochMilli(from), Instant.ofEpochMilli(to)));
+    public ResponseEntity<List<OpenSlotDTO>> listSlotsByDepartment(@RequestParam Long departmentId, @RequestParam Long from, @RequestParam Long to, @AuthenticationPrincipal Principal principal) {
+        final User patient = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(appointmentService.getOpenByDepartment(departmentId, Instant.ofEpochMilli(from), Instant.ofEpochMilli(to), patient));
     }
 
     @GetMapping("api/appointments/available")
@@ -235,14 +236,6 @@ public class AppointmentApi {
     public ResponseEntity<List<Appointment>> getAppointmentsFromDate(@RequestBody AppointmentDateDto appointmentDateDto) {
         final Hospital hospital = hospitalService.get(appointmentDateDto.getDoctorId()).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(appointmentService.getScheduledAndNotFinishedAppointmentsBasedOnDate(hospital, appointmentDateDto.getDateAndTime()));
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
-    @PutMapping("api/hospitals/deny-user")
-    public ResponseEntity<Void> deny(@RequestBody DenyUserDto denyUserDto) {
-        final Appointment appointment = appointmentService.get(Long.parseLong(denyUserDto.getId())).orElseThrow(NotFoundException::new);
-        userService.lowerUserPoints(appointment);
-        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")

@@ -1,6 +1,8 @@
 package com.isa.service;
 
+import com.isa.domain.dto.EquipmentDTO;
 import com.isa.domain.model.Equipment;
+import com.isa.domain.model.Room;
 import com.isa.repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,14 @@ public class EquipmentService {
     }
 
     public Equipment create(Equipment equipment) {
+        return equipmentRepository.save(equipment);
+    }
+
+    public Equipment createForRoom(EquipmentDTO dto, Room room) {
+        final Equipment equipment = new Equipment();
+        equipment.setName(dto.getName());
+        equipment.setAmount(dto.getAmount());
+        equipment.setRoom(room);
         return equipmentRepository.save(equipment);
     }
 

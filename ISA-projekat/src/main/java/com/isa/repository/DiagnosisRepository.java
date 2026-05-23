@@ -12,5 +12,9 @@ public interface DiagnosisRepository extends JpaRepository<Diagnosis, Long> {
 
     List<Diagnosis> findAllByDepartmentNameName(String departmentName);
 
+    List<Diagnosis> findAllByNameContainingIgnoreCase(String name);
+
+    List<Diagnosis> findAllByNameContainingIgnoreCaseAndDepartmentNameName(String name, String departmentName);
+
     Optional<Diagnosis> findByCodeAndDepartmentNameName(String code, String departmentName);
 }

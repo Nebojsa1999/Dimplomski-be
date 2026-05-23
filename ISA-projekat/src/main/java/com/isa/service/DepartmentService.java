@@ -62,8 +62,13 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
+    @Transactional
     public void delete(Department department) {
+        final String name = department.getName();
         departmentRepository.delete(department);
+        if (departmentRepository.countByName(name) == 0) {
+            departmentNameRepository.findByName(name).ifPresent(departmentNameRepository::delete);
+        }
     }
 
     public List<DepartmentName> listNames() {

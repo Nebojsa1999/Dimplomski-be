@@ -13,6 +13,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     List<Department> findAllByHospitalId(Long hospitalId);
 
+    long countByName(String name);
+
     @Query("""
             SELECT department FROM Department department
             WHERE (:hospitalId IS NULL OR department.hospital.id = :hospitalId)

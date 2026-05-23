@@ -44,10 +44,18 @@ public class DiagnosisService {
         return diagnosisRepository.findById(id);
     }
 
-    public List<Diagnosis> list(String departmentName) {
-        return departmentName != null
-                ? diagnosisRepository.findAllByDepartmentNameName(departmentName)
-                : diagnosisRepository.findAll();
+    public List<Diagnosis> list(String name, String departmentName) {
+        final boolean hasName = name != null && !name.isBlank();
+        final boolean hasDept = departmentName != null;
+        if (hasName && hasDept) {
+            return diagnosisRepository.findAllByNameContainingIgnoreCaseAndDepartmentNameName(name, departmentName);
+        } else if (hasName) {
+            return diagnosisRepository.findAllByNameContainingIgnoreCase(name);
+        } else if (hasDept) {
+            return diagnosisRepository.findAllByDepartmentNameName(departmentName);
+        } else {
+            return diagnosisRepository.findAll();
+        }
     }
 
     @Transactional

@@ -34,7 +34,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("""
             SELECT appointment FROM Appointment appointment
             WHERE appointment.doctor.id = :doctorId
-              AND appointment.appointmentStatus = 'SCHEDULED' OR appointment.appointmentStatus = 'FINISHED'
+              AND (appointment.appointmentStatus = 'SCHEDULED' OR appointment.appointmentStatus = 'FINISHED')
               AND appointment.dateAndTime >= :start
               AND appointment.dateAndTime < :end
             """)

@@ -79,6 +79,13 @@ public class HospitalApi {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
+    @PostMapping(path = "/rooms/{roomId}/equipment")
+    public ResponseEntity<Equipment> createEquipmentForRoom(@PathVariable Long roomId, @RequestBody EquipmentDTO dto) {
+        final Room room = roomService.get(roomId).orElseThrow(NotFoundException::new);
+        return new ResponseEntity<>(equipmentService.createForRoom(dto, room), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
     @GetMapping(path = "/equipment/{id}")
     public ResponseEntity<Equipment> getEquipment(@PathVariable Long id) {
         final Equipment equipment = equipmentService.get(id).orElseThrow(NotFoundException::new);

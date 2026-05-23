@@ -39,8 +39,8 @@ public class DiagnosisApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
     @GetMapping
-    public ResponseEntity<List<Diagnosis>> list(@RequestParam(required = false) String departmentName) {
-        return new ResponseEntity<>(diagnosisService.list(departmentName), HttpStatus.OK);
+    public ResponseEntity<List<Diagnosis>> list(@RequestParam(required = false) String name, @RequestParam(required = false) String departmentName) {
+        return new ResponseEntity<>(diagnosisService.list(name, departmentName), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
