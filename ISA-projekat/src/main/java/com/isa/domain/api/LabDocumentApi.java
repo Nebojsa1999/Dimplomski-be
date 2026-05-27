@@ -66,7 +66,7 @@ public class LabDocumentApi {
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping("/lab-documents/{id}/download")
     public ResponseEntity<byte[]> download(@PathVariable Long id) {
-        final LabDocument document = labDocumentService.get(id).orElseThrow(NotFoundException::new);
+        final LabDocument document = labDocumentService.listByAppointment(id);
         final String filename = document.getOriginalFilename() != null ? document.getOriginalFilename() : "document";
         final MediaType mediaType = document.getContentType() != null
                 ? MediaType.parseMediaType(document.getContentType())

@@ -27,14 +27,14 @@ public class AppointmentReportService {
     @Transactional
     public AppointmentReport create(AppointmentReportDto appointmentReportDto, Appointment appointment) {
         final AppointmentReport appointmentReport = new AppointmentReport();
-        appointmentReport.setBloodType(appointmentReportDto.getBloodType());
+        appointmentReport.setAnamnesis(appointmentReportDto.getAnamnesis());
         appointmentReport.setAllergies(appointmentReportDto.getAllergies());
+        appointmentReport.setChronicDiseases(appointmentReportDto.getChronicDiseases());
         appointmentReport.setBloodPressure(appointmentReportDto.getBloodPressure());
-        appointmentReport.setFamilyHistory(appointmentReportDto.getFamilyHistory());
-        appointmentReport.setPastMedicalHistory(appointmentReportDto.getPastMedicalHistory());
         appointmentReport.setHearthRate(appointmentReportDto.getHearthRate());
+        appointmentReport.setNextControl(appointmentReportDto.getNextControl());
         appointmentReport.setDiagnosis(appointmentReportDto.getDiagnosis());
-        appointmentReport.setTherapy(appointmentReportDto.getTherapy());
+        appointmentReport.setTherapy(appointmentReportDto.getLongThermTherapy());
         appointmentReport.setLabResults(appointmentReportDto.getLabResults());
         appointmentReport.setDoctorsComment(appointmentReportDto.getDoctorsComment());
 

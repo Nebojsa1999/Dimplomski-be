@@ -11,8 +11,9 @@ public class AppointmentCompleteDto {
     private String therapy;
     private BloodType bloodType;
     private String allergies;
-    private String pastMedicalHistory;
-    private String familyHistory;
+    private String anamnesis;
+    private String chronicDiseases;
+    private String nextControl;
 
     public String getBloodPressure() {
         return bloodPressure;
@@ -70,19 +71,27 @@ public class AppointmentCompleteDto {
         this.allergies = allergies;
     }
 
-    public String getPastMedicalHistory() {
-        return pastMedicalHistory;
+    public String getAnamnesis() {
+        return anamnesis;
     }
 
-    public void setPastMedicalHistory(String pastMedicalHistory) {
-        this.pastMedicalHistory = pastMedicalHistory;
+    public void setAnamnesis(String anamnesis) {
+        this.anamnesis = anamnesis;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
+    public String getChronicDiseases() {
+        return chronicDiseases;
     }
 
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
+    public void setChronicDiseases(String chronicDiseases) {
+        this.chronicDiseases = chronicDiseases;
+    }
+
+    public String getNextControl() {
+        return nextControl;
+    }
+
+    public void setNextControl(String nextControl) {
+        this.nextControl = nextControl;
     }
 }

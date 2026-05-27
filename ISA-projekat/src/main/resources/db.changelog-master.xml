@@ -646,5 +646,19 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="020-appointment-report-rework-fields" author="nebojsa" context="development,production">
+        <dropColumn tableName="appointment_report" columnName="past_medical_history"/>
+        <dropColumn tableName="appointment_report" columnName="family_history"/>
+        <addColumn tableName="appointment_report">
+            <column name="anamnesis" type="VARCHAR(1000)"/>
+        </addColumn>
+        <addColumn tableName="appointment_report">
+            <column name="chronic_diseases" type="VARCHAR(1000)"/>
+        </addColumn>
+        <addColumn tableName="appointment_report">
+            <column name="next_control" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

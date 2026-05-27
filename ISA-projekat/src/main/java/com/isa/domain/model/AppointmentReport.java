@@ -12,11 +12,11 @@ public class AppointmentReport extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-    private String pastMedicalHistory;
+    private String anamnesis;
 
     private String allergies;
 
-    private String familyHistory;
+    private String chronicDiseases;
 
     private String bloodPressure;
 
@@ -25,6 +25,8 @@ public class AppointmentReport extends AbstractEntity {
     private String diagnosis;
 
     private String therapy;
+
+    private String nextControl;
 
     @Column(columnDefinition = "TEXT")
     private String labResults;
@@ -52,12 +54,12 @@ public class AppointmentReport extends AbstractEntity {
         this.bloodType = bloodType;
     }
 
-    public String getPastMedicalHistory() {
-        return pastMedicalHistory;
+    public String getAnamnesis() {
+        return anamnesis;
     }
 
-    public void setPastMedicalHistory(String pastMedicalHistory) {
-        this.pastMedicalHistory = pastMedicalHistory;
+    public void setAnamnesis(String anamnesis) {
+        this.anamnesis = anamnesis;
     }
 
     public String getAllergies() {
@@ -68,12 +70,20 @@ public class AppointmentReport extends AbstractEntity {
         this.allergies = allergies;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
+    public String getChronicDiseases() {
+        return chronicDiseases;
     }
 
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
+    public void setChronicDiseases(String chronicDiseases) {
+        this.chronicDiseases = chronicDiseases;
+    }
+
+    public String getNextControl() {
+        return nextControl;
+    }
+
+    public void setNextControl(String nextControl) {
+        this.nextControl = nextControl;
     }
 
     public String getBloodPressure() {
@@ -128,13 +138,14 @@ public class AppointmentReport extends AbstractEntity {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("bloodType", bloodType)
-                .append("pastMedicalHistory", pastMedicalHistory)
+                .append("anamnesis", anamnesis)
                 .append("allergies", allergies)
-                .append("familyHistory", familyHistory)
+                .append("chronicDiseases", chronicDiseases)
                 .append("bloodPressure", bloodPressure)
                 .append("hearthRate", hearthRate)
                 .append("diagnosis", diagnosis)
                 .append("therapy", therapy)
+                .append("nextControl", nextControl)
                 .append("labResults", labResults)
                 .append("doctorsComment", doctorsComment)
                 .toString();

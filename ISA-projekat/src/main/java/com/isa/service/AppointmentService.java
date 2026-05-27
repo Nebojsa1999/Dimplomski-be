@@ -21,7 +21,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class AppointmentService {
@@ -37,7 +36,6 @@ public class AppointmentService {
     private final MedicationRepository medicationRepository;
     private final LabDocumentRepository labDocumentRepository;
     private final FeedbackRepository feedbackRepository;
-    private final FavoriteDoctorRepository favoriteDoctorRepository;
     private final EmailService emailService;
 
     @Autowired
@@ -50,8 +48,7 @@ public class AppointmentService {
                                MedicationRepository medicationRepository,
                                LabDocumentRepository labDocumentRepository,
                                FeedbackRepository feedbackRepository,
-                               FavoriteDoctorRepository favoriteDoctorRepository,
-                               EmailService emailService) {
+                              EmailService emailService) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
         this.appointmentReportRepository = appointmentReportRepository;
@@ -61,7 +58,6 @@ public class AppointmentService {
         this.medicationRepository = medicationRepository;
         this.labDocumentRepository = labDocumentRepository;
         this.feedbackRepository = feedbackRepository;
-        this.favoriteDoctorRepository = favoriteDoctorRepository;
         this.emailService = emailService;
     }
 
@@ -243,8 +239,9 @@ public class AppointmentService {
         report.setTherapy(dto.getTherapy());
         report.setBloodType(dto.getBloodType());
         report.setAllergies(dto.getAllergies());
-        report.setPastMedicalHistory(dto.getPastMedicalHistory());
-        report.setFamilyHistory(dto.getFamilyHistory());
+        report.setAnamnesis(dto.getAnamnesis());
+        report.setChronicDiseases(dto.getChronicDiseases());
+        report.setNextControl(dto.getNextControl());
 
         if (dto.getDiagnosisId() != null) {
             final Diagnosis diagnosis = diagnosisRepository.findById(dto.getDiagnosisId()).orElseThrow(() -> new NotFoundException("Diagnosis not found"));
@@ -275,32 +272,18 @@ public class AppointmentService {
         return appointmentRepository.findAllByHospitalId(appointmentStatus, from, to, hospital.getId());
     }
 
-    public List<OpenSlotDTO> getOpenByDepartment(Long departmentId, Instant from, Instant to, User patient) {
-        final List<User> doctors = userRepository.findAllByDepartmentId(departmentId);
-        if (doctors.isEmpty()) {
-            return List.of();
-        }
-
-        final Set<Long> favoriteIds = favoriteDoctorRepository.findAllByPatient(patient).stream()
-                .map(fd -> fd.getDoctor().getId())
-                .collect(java.util.stream.Collectors.toSet());
-
-        final User chosen = doctors.stream()
-                .filter(d -> favoriteIds.contains(d.getId()))
-                .findFirst()
-                .orElse(doctors.get(0));
-
-        final LocalDate dateFrom = from.atZone(ZONE).toLocalDate();
-        final LocalDate dateTo = to.atZone(ZONE).toLocalDate();
+    public List<OpenSlotDTO> getOpenByDoctor(User doctor, Instant from, Instant to) {
+        final LocalDate dateFrom = from.atZone(ZoneOffset.UTC).toLocalDate();
+        final LocalDate dateTo = to.atZone(ZoneOffset.UTC).toLocalDate();
 
         final List<OpenSlotDTO> result = new java.util.ArrayList<>();
         LocalDate current = dateFrom;
         while (!current.isAfter(dateTo)) {
             final LocalDate date = current;
-            getAvailableTimeSlots(chosen, date).forEach(slot ->
+            getAvailableTimeSlots(doctor, date).forEach(slot ->
                     result.add(new OpenSlotDTO(
-                            chosen.getId(),
-                            chosen.getFirstName() + " " + chosen.getLastName(),
+                            doctor.getId(),
+                            doctor.getFirstName() + " " + doctor.getLastName(),
                             date,
                             slot.getStartTime(),
                             slot.getEndTime())));

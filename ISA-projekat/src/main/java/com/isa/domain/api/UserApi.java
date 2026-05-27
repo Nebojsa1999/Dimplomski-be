@@ -59,6 +59,7 @@ public class UserApi {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('DOCTOR')")
     public ResponseEntity<List<User>> list(@RequestParam(required = false) String name) {
         return new ResponseEntity<>(userService.list(name), HttpStatus.OK);
     }

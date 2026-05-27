@@ -1,21 +1,15 @@
 package com.isa.domain.dto;
 
-import com.isa.enums.BloodType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class AppointmentReportDto {
 
-    @Enumerated(EnumType.STRING)
-    private BloodType bloodType;
-
-    private String pastMedicalHistory;
+    private String anamnesis;
 
     private String allergies;
 
-    private String familyHistory;
+    private String chronicDiseases;
 
     private String bloodPressure;
 
@@ -23,26 +17,20 @@ public class AppointmentReportDto {
 
     private String diagnosis;
 
-    private String therapy;
+    private String longThermTherapy;
+
+    private String nextControl;
 
     private String labResults;
 
     private String doctorsComment;
 
-    public BloodType getBloodType() {
-        return bloodType;
+    public String getAnamnesis() {
+        return anamnesis;
     }
 
-    public void setBloodType(BloodType bloodType) {
-        this.bloodType = bloodType;
-    }
-
-    public String getPastMedicalHistory() {
-        return pastMedicalHistory;
-    }
-
-    public void setPastMedicalHistory(String pastMedicalHistory) {
-        this.pastMedicalHistory = pastMedicalHistory;
+    public void setAnamnesis(String anamnesis) {
+        this.anamnesis = anamnesis;
     }
 
     public String getAllergies() {
@@ -53,12 +41,20 @@ public class AppointmentReportDto {
         this.allergies = allergies;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
+    public String getChronicDiseases() {
+        return chronicDiseases;
     }
 
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
+    public void setChronicDiseases(String chronicDiseases) {
+        this.chronicDiseases = chronicDiseases;
+    }
+
+    public String getNextControl() {
+        return nextControl;
+    }
+
+    public void setNextControl(String nextControl) {
+        this.nextControl = nextControl;
     }
 
     public String getBloodPressure() {
@@ -85,12 +81,12 @@ public class AppointmentReportDto {
         this.diagnosis = diagnosis;
     }
 
-    public String getTherapy() {
-        return therapy;
+    public String getLongThermTherapy() {
+        return longThermTherapy;
     }
 
-    public void setTherapy(String therapy) {
-        this.therapy = therapy;
+    public void setLongThermTherapy(String longThermTherapy) {
+        this.longThermTherapy = longThermTherapy;
     }
 
     public String getLabResults() {
@@ -112,14 +108,14 @@ public class AppointmentReportDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("bloodType", bloodType)
-                .append("pastMedicalHistory", pastMedicalHistory)
+                .append("anamnesis", anamnesis)
                 .append("allergies", allergies)
-                .append("familyHistory", familyHistory)
+                .append("chronicDiseases", chronicDiseases)
                 .append("bloodPressure", bloodPressure)
                 .append("hearthRate", hearthRate)
                 .append("diagnosis", diagnosis)
-                .append("therapy", therapy)
+                .append("longThermTherapy", longThermTherapy)
+                .append("nextControl", nextControl)
                 .append("labResults", labResults)
                 .append("doctorsComment", doctorsComment)
                 .toString();

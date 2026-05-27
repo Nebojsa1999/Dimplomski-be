@@ -82,9 +82,9 @@ public class AppointmentApi {
     }
 
     @GetMapping("api/appointments/open")
-    public ResponseEntity<List<OpenSlotDTO>> listSlotsByDepartment(@RequestParam Long departmentId, @RequestParam Long from, @RequestParam Long to, @AuthenticationPrincipal Principal principal) {
-        final User patient = userService.get(principal.getUserId()).orElseThrow(NotFoundException::new);
-        return ResponseEntity.ok(appointmentService.getOpenByDepartment(departmentId, Instant.ofEpochMilli(from), Instant.ofEpochMilli(to), patient));
+    public ResponseEntity<List<OpenSlotDTO>> listSlotsByDoctor(@RequestParam Long doctorId, @RequestParam Long from, @RequestParam Long to) {
+        final User doctor = userService.get(doctorId).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(appointmentService.getOpenByDoctor(doctor, Instant.ofEpochMilli(from), Instant.ofEpochMilli(to)));
     }
 
     @GetMapping("api/appointments/available")
@@ -226,9 +226,9 @@ public class AppointmentApi {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
     @PostMapping("api/hospitals/appointments/{id}/medication")
-    public ResponseEntity<Medication> createMedication(@RequestBody Medication medication, @PathVariable long id) {
+    public ResponseEntity<Medication> createMedication(@RequestBody MedicationDto dto, @PathVariable long id) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
-        return new ResponseEntity<>(medicationService.create(medication, appointment), HttpStatus.CREATED);
+        return new ResponseEntity<>(medicationService.create(dto, appointment), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM')")
@@ -259,7 +259,7 @@ public class AppointmentApi {
         return ResponseEntity.ok(operationRoomBookingService.findByRoom(room));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping(value = "api/hospitals/appointments/{id}/appointment-report/download", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> downloadAppointmentReport(@PathVariable long id) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
@@ -273,7 +273,7 @@ public class AppointmentApi {
                 .body(new ByteArrayResource(bytes));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_SYSTEM', 'DOCTOR', 'PATIENT')")
     @GetMapping(value = "api/hospitals/appointments/{id}/medication/download", produces = "application/octet-stream")
     public ResponseEntity<ByteArrayResource> downloadPrescription(@PathVariable long id) {
         final Appointment appointment = appointmentService.get(id).orElseThrow(NotFoundException::new);
